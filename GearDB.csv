@@ -1,0 +1,4 @@
+name,slot,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,socket1,socket2,socket3,socket4
+Fervid Dream Reaver Armor,ROBE,1219,7,0,0,8,128,117,24,13,12,TRUE,null,null,null,null
+Fervid Dream Reaver Hood,HAT,898,9,0,0,6,188,94,26,9,8,FALSE,null,null,null,null
+Fire Fairy Kei Necklace,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,CIRCLE,TRIANGLE,null,null
