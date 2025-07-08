@@ -5,17 +5,17 @@ import me.opd.DataReading.GearSlot;
 import me.opd.Individual;
 import me.opd.JewelHandeling.Jewel;
 import me.opd.JewelHandeling.Socket;
+import me.opd.PetHandeling.PetTrait;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class PopulationInitializer {
-    public static List<Individual> initialize(List<Gear> gearPool, List<Jewel> jewelPool) {
+    public static List<Individual> initialize(List<Gear> gearPool, List<Jewel> jewelPool, List<PetTrait> traits) {
         List<Individual> population = new ArrayList<>();
         Random rand = new Random();
-        System.out.println(gearPool.size());
-        System.out.println(jewelPool.size());
+        System.out.println(gearPool.size() + " total gear pieces");
+        System.out.println(jewelPool.size() + " total jewels");
+        System.out.println(traits.size() + " total pet traits");
 
 
         for (int i = 0; i < GAConfig.POPULATION_SIZE; i++) {
@@ -37,7 +37,14 @@ public class PopulationInitializer {
                     }
                 }
                 ind.jewels.put(slot, jewels);
+
             }
+            Set<PetTrait> petTraitSet = new HashSet<>();
+            while (petTraitSet.size() < 5) {
+                petTraitSet.add(traits.get(rand.nextInt(traits.size())));
+            }
+            ind.petTraits = new ArrayList<>(petTraitSet);
+            System.out.println(ind.petTraits.size() + " total pet traits");
 
             population.add(ind);
         }

@@ -5,14 +5,15 @@ import me.opd.Fitness;
 import me.opd.GeneticUtils;
 import me.opd.Individual;
 import me.opd.JewelHandeling.Jewel;
+import me.opd.PetHandeling.PetTrait;
 import me.opd.Utils.CopyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GeneticAlgorithm {
-    public static Individual run(List<Gear> gearPool, List<Jewel> jewelPool) {
-        List<Individual> population = PopulationInitializer.initialize(gearPool, jewelPool);
+    public static Individual run(List<Gear> gearPool, List<Jewel> jewelPool, List<PetTrait> traits) {
+        List<Individual> population = PopulationInitializer.initialize(gearPool, jewelPool,traits);
         Individual best = null;
         double bestFitness = Double.NEGATIVE_INFINITY;
 
@@ -32,7 +33,7 @@ public class GeneticAlgorithm {
                 }
 
                 if (Math.random() < GAConfig.MUTATION_RATE) {
-                    child = GeneticUtils.mutate(child, gearPool, jewelPool);
+                    child = GeneticUtils.mutate(child, gearPool, jewelPool, traits);
                 }
 
                 newGen.add(child);

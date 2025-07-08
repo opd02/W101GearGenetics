@@ -5,12 +5,15 @@ import me.opd.DataReading.GearSlot;
 import me.opd.DataReading.StatBlock;
 import me.opd.JewelHandeling.Jewel;
 import me.opd.JewelHandeling.Socket;
+import me.opd.PetHandeling.Pet;
+import me.opd.PetHandeling.PetTrait;
 
 import java.util.*;
 
 public class Individual {
     public Map<GearSlot, Gear> gearSet = new HashMap<>();
     public Map<GearSlot, List<Jewel>> jewels = new HashMap<>();
+    public List<PetTrait> petTraits = new ArrayList<>(); // exactly 5
 
     public StatBlock evaluateStats() {
         StatBlock total = new StatBlock();
@@ -26,9 +29,13 @@ public class Individual {
                 }
             }
         }
+        for (PetTrait trait : petTraits) {
+            total.add(trait.statBonus);
+        }
+
         return total;
     }
     public String statsToString(){
-        return evaluateStats().toString();
+        return evaluateStats().addBaseStats().toString();
     }
 }

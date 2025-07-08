@@ -12,6 +12,7 @@ public class StatBlock {
     public int damage = 0;
     public int pierce = 0;
     public boolean proviceblade = false;
+    public boolean providesharpen = false;
 
     public void add(StatBlock other) {
         this.health += other.health;
@@ -25,6 +26,7 @@ public class StatBlock {
         this.proviceblade |= other.proviceblade;
         this.pierce += other.pierce;
         this.damage += other.damage;
+        this.providesharpen = other.providesharpen;
     }
 
     @Override
@@ -41,7 +43,16 @@ public class StatBlock {
                 ", damage=" + damage +
                 ", pierce=" + pierce +
                 ", proviceblade=" + proviceblade +
+                ", providesharpen=" + providesharpen +
                 '}';
+    }
+
+    public StatBlock addBaseStats(){
+        this.health += 4303;
+        this.powerpip += 40;
+        this.shadowpip += 85;
+        this.pipconversion += 364;
+        return this;
     }
 }
 

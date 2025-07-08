@@ -1,0 +1,7 @@
+name,placeholder,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,providesharpen
+Spell-Proof,null,123,0,0,0,0,0,0,0,11,0,FALSE,FALSE
+Spell-Defy,null,0,0,124,0,0,0,0,0,7,0,FALSE,FALSE
+Spell-Proof,null,0,0,0,123,0,0,0,0,11,0,FALSE,FALSE
+Spell-D2efy,null,0,0,0,0,124,0,0,0,7,0,FALSE,FALSE
+Spell-Pr1oof,null,1,0,0,0,123,0,0,0,11,0,FALSE,FALSE
+Spell-De4fy,null,0,0,0,123,0,0,1,0,7,0,FALSE,FALSE
