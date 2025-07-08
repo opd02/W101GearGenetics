@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Random;
 
 public class GeneticUtils {
-    //TODO also need to make the jewelDB readable similar to gear
     public static Individual mutate(Individual ind, List<Gear> gearPool, List<Jewel> jewelPool) {
         Random rand = new Random();
         Individual copy = CopyUtils.deepCopy(ind); // implement deep copy

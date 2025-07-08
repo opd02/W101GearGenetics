@@ -13,6 +13,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        //TODO Add the real stats to the DBs from the wiki
         List<Gear> gearPool = GearLoader.loadGearFromCSV(System.getProperty("user.dir")+"\\GearDB.csv");
         List<Jewel> jewelPool = GearLoader.loadJewelsFromCSV(System.getProperty("user.dir")+"\\JewelDB.csv");
 
@@ -24,6 +25,7 @@ public class Main {
         }
         System.out.println("Stats:");
         System.out.println(best.statsToString());
+        //TODO Also print out what the stats would be for a base player at max level. Include minimum health and powerpip.
 
     }
 }
