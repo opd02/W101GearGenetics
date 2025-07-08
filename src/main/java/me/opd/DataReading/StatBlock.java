@@ -26,5 +26,22 @@ public class StatBlock {
         this.pierce += other.pierce;
         this.damage += other.damage;
     }
+
+    @Override
+    public String toString() {
+        return "StatBlock{" +
+                "health=" + health +
+                ", powerpip=" + powerpip +
+                ", shadowpip=" + shadowpip +
+                ", pipconversion=" + pipconversion +
+                ", accuracy=" + accuracy +
+                ", critical=" + critical +
+                ", criticalblock=" + criticalblock +
+                ", resist=" + resist +
+                ", damage=" + damage +
+                ", pierce=" + pierce +
+                ", proviceblade=" + proviceblade +
+                '}';
+    }
 }
 

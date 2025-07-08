@@ -1,0 +1,9 @@
+name,jeweltype,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade
+Mega Damage Jewel,CIRCLE,1219,7,0,0,8,128,117,24,13,12,FALSE
+Mega Tank Jewel,TEAR,1219,7,0,0,8,128,117,64,13,12,FALSE
+Mega Tank Jewel,TRIANGLE,1219,7,0,0,8,128,117,64,132,12,FALSE
+Mega Tank Jewel,SQUARE,1219,7,0,0,8,128,117,64,0,12,FALSE
+Mega Damage Jewel,CIRCLE,1219,7,3,0,8,128,117,24,13,12,TRUE
+Mega Tank Jewel,TEAR,1219,7,0,0,24,128,117,64,13,12,FALSE
+Mega Tank Jewel,TRIANGLE,1219,7,66,0,8,128,117,64,132,12,FALSE
+Mega Tank Jewel,SQUARE,1219,7,0,21,8,128,117,64,0,12,FALSE
