@@ -1,9 +1,10 @@
 name,jeweltype,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,providesharpen
-Mega Damage Jewel,CIRCLE,1219,7,0,0,8,128,117,24,13,12,FALSE,FALSE
-Mega Tank Jewel,TEAR,1219,7,0,0,8,128,117,64,13,12,FALSE,FALSE
-Mega Tank Jewel,TRIANGLE,1219,7,0,0,8,128,117,64,132,12,FALSE,FALSE
-Mega Tank Jewel,SQUARE,1219,7,0,0,8,128,117,64,0,12,FALSE,FALSE
-Mega Damage Jewel,CIRCLE,1219,7,3,0,8,128,117,24,13,12,TRUE,FALSE
-Mega Tank Jewel,TEAR,1219,7,0,0,24,128,117,64,13,12,FALSE,FALSE
-Mega Tank Jewel,TRIANGLE,1219,7,66,0,8,128,117,64,132,12,FALSE,FALSE
-Mega Tank Jewel,SQUARE,1219,7,0,21,8,128,117,64,0,12,FALSE,FALSE
+Unearthly Damage Ruby +10%,CIRCLE,0,0,0,0,0,0,0,10,0,0,FALSE,FALSE
+Lustrous PIP Opal +10%,TRIANGLE,0,10,0,0,0,0,0,0,0,0,FALSE,FALSE
+Dual Fireblade Ruby,TRIANGLE,0,0,0,0,0,0,0,0,0,0,TRUE,FALSE
+Flawless Accurate Ruby +16%,TRIANGLE,0,0,0,0,16,0,0,0,0,0,FALSE,FALSE
+Sharpened Blade Opal,TEAR,0,0,0,0,0,0,0,0,0,0,FALSE,TRUE
+Flawless Health Opal +155,TEAR,155,0,0,0,0,0,0,0,0,0,FALSE,FALSE
+Unearthly Health Ruby +595,SQUARE,595,0,0,0,0,0,0,0,0,0,FALSE,FALSE
+Unearthly Blocking Ruby +52,SQUARE,0,0,0,0,0,0,52,0,0,0,FALSE,FALSE
+Polished Piercing Ruby +6%,CIRCLE,0,0,0,0,0,0,0,0,0,6,FALSE,FALSE

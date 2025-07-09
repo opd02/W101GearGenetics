@@ -26,7 +26,7 @@ public class StatBlock {
         this.proviceblade |= other.proviceblade;
         this.pierce += other.pierce;
         this.damage += other.damage;
-        this.providesharpen = other.providesharpen;
+        this.providesharpen |= other.providesharpen;
     }
 
     @Override

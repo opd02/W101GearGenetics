@@ -16,11 +16,9 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        //TODO Add the real stats to the DBs from the wiki
         List<Gear> gearPool = GearLoader.loadGearFromCSV(System.getProperty("user.dir")+"\\GearDB.csv");
         List<Jewel> jewelPool = GearLoader.loadJewelsFromCSV(System.getProperty("user.dir")+"\\JewelDB.csv");
         List<PetTrait> traitPool = GearLoader.loadTraitsFromCSV(System.getProperty("user.dir")+"\\PetTraitsDB.csv");
-
 
         Individual best = GeneticAlgorithm.run(gearPool, jewelPool, traitPool);
 
@@ -32,7 +30,6 @@ public class Main {
                 System.out.println("  with Jewel " + jewel.name);
             }
             if(entry.getKey().equals(GearSlot.PET)){
-                System.out.println("This pet has " + best.petTraits.size() + " pet traits");
                 for(PetTrait trait : best.petTraits) {
                     System.out.println("  with trait " + trait.name);
                 }
@@ -40,7 +37,5 @@ public class Main {
         }
         System.out.println("TOTAL Stats with Base Stats:");
         System.out.println(best.statsToString());
-        //TODO Also print out what the stats would be for a base player at max level. Include minimum health and powerpip.
-
     }
 }

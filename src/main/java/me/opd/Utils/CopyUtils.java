@@ -6,6 +6,7 @@ import me.opd.DataReading.StatBlock;
 import me.opd.Individual;
 import me.opd.JewelHandeling.Jewel;
 import me.opd.JewelHandeling.Socket;
+import me.opd.PetHandeling.PetTrait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class CopyUtils {
                 }
                 copy.jewels.put(entry.getKey(), jewelCopy);
             }
+
+            copy.petTraits.addAll(original.petTraits);
 
             return copy;
         }

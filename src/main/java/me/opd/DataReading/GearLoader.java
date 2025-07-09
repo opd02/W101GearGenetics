@@ -51,14 +51,6 @@ public class GearLoader {
 
                 StatBlock stats = statTrim(fields);
                 jewel.statBonus = stats;
-//
-//                List<Socket> sockets = new ArrayList<>();
-//                if (!fields[13].trim().equals("null")) sockets.add(new Socket(JewelType.valueOf(fields[13].trim())));
-//                if (!fields[14].trim().equals("null")) sockets.add(new Socket(JewelType.valueOf(fields[14].trim())));
-//                if (!fields[15].trim().equals("null")) sockets.add(new Socket(JewelType.valueOf(fields[15].trim())));
-//                if (!fields[16].trim().equals("null")) sockets.add(new Socket(JewelType.valueOf(fields[16].trim())));
-//
-//                gear.sockets = sockets;
 
                 jewelList.add(jewel);
             }

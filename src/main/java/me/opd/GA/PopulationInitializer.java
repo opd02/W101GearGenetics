@@ -44,7 +44,6 @@ public class PopulationInitializer {
                 petTraitSet.add(traits.get(rand.nextInt(traits.size())));
             }
             ind.petTraits = new ArrayList<>(petTraitSet);
-            System.out.println(ind.petTraits.size() + " total pet traits");
 
             population.add(ind);
         }

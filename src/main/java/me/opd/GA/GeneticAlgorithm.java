@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GeneticAlgorithm {
     public static Individual run(List<Gear> gearPool, List<Jewel> jewelPool, List<PetTrait> traits) {
-        List<Individual> population = PopulationInitializer.initialize(gearPool, jewelPool,traits);
+        List<Individual> population = PopulationInitializer.initialize(gearPool, jewelPool, traits);
         Individual best = null;
         double bestFitness = Double.NEGATIVE_INFINITY;
 

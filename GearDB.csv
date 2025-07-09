@@ -1,21 +1,52 @@
 name,slot,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,providesharpen,socket1,socket2,socket3,socket4
-Fervid Dream Reaver Armor,HAT,1219,7,0,0,8,128,117,24,113,12,FALSE,FALSE,null,null,null,null
-Ferviasdad Dream Reaver Hood,ROBE,898,9,0,0,6,188,94,126,9,8,FALSE,FALSE,null,null,null,null
-Fire Faiasdry Kei Necklace,BOOTS,466,0,0,1196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fire Fairasdy Kei Necklace,WAND,466,0,0,196,10,0,612,01,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fervasdid Dream Reaver Armor,AMULET,1219,7,0,0,8,128,1117,24,13,12,FALSE,FALSE,null,null,null,null
-Fervid Dream Reaveaar Hood,ATHAME,898,9,0,0,16,188,94,26,9,8,FALSE,FALSE,null,null,null,null
-Fire Fairy Kaei Neaascklace,RING,466,0,0,1966,01,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fire Faisry Kaaei Necklace,PET,466,0,3,196,0,054,62,0,8,01,FALSE,FALSE,null,null,null,null
-Fiare Faairy Keai Necklace,DECK,466,2,0,196,0,0,262,0,81,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fire Fairsy Kei Neacklace,MOUNT,466,0,4,196,55,0,62,0,18,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fervid Dream Reaver Armor,HAT,1219,7,0,0,8,28,117,24,113,12,FALSE,FALSE,null,null,null,null
-Ferviasdad Dream Reaver Hood,ROBE,898,9,0,0,6,8,94,126,9,8,FALSE,FALSE,null,null,null,null
-Fire Faiasdry Kei Necklace,BOOTS,466,0,0,1196,6,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fire Fairasdy Kei Necklace,WAND,466,0,0,196,150,0,612,01,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fervasdid Dream Reaver Armor,AMULET,1219,7,04,0,8,128,1117,24,13,12,FALSE,FALSE,null,null,null,null
-Fervid Dream Reaveaar Hood,ATHAME,898,9,0,0,16,188,34,26,9,8,FALSE,FALSE,null,null,null,null
-Fire Fairy Kaei Neaascklace,RING,466,0,0,1966,01,0,0,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Fire Faisry Kaaei Necklace,PET,466,0,3,0,0,0,62,0,8,01,FALSE,FALSE,null,null,null,null
-Fiare Faairy Keai Necklace,DECK,466,2,0,16,0,0,262,0,81,0,TRUE,FALSE,CIRCLE,TRIANGLE,SQUARE,TEAR
-Fire Fairsy Kei Neacklace,MOUNT,466,0,4,1,55,0,2,0,1,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
+Xibalba Meteoric Helm,HAT,698,0,19,0,6,188,94,36,11,8,FALSE,FALSE,null,null,null,null
+Avatar's Crown of Wrath,HAT,898,9,0,0,6,188,94,36,9,8,TRUE,FALSE,null,null,null,null
+Daemonic Crown of Overheating,HAT,798,10,17,0,7,188,0,29,8,10,FALSE,FALSE,null,null,null,null
+Fervid Dream Reaver Hood,HAT,898,9,0,0,6,188,94,36,9,8,FALSE,FALSE,null,null,null,null
+Fiery Chrysanthemum Cowl,HAT,798,8,21,0,7,188,81,29,0,10,TRUE,FALSE,null,null,null,null
+Fire Fairy Kei Broadbrim,HAT,698,0,19,0,6,188,94,36,11,8,FALSE,FALSE,null,null,null,null
+High Octane Traveler Goggles,HAT,798,10,17,0,7,188,0,29,8,10,FALSE,FALSE,null,null,null,null
+Hunhau's Meteoric Helm,HAT,898,8,21,0,0,164,94,33,9,7,FALSE,FALSE,null,null,null,null
+Khonsu's Searing Crown,HAT,997,8,21,0,7,0,108,29,10,6,FALSE,FALSE,null,null,null,null
+Wastelander's Scorched Hat,HAT,599,11,19,0,8,164,0,33,10,7,FALSE,FALSE,null,null,null,null
+High Octane Traveler Overcoat,ROBE,1045,8,19,0,9,128,0,30,12,10,FALSE,FALSE,null,null,null,null
+Avatar's Armor of Wrath,ROBE,1219,7,0,0,8,128,117,24,13,12,FALSE,FALSE,null,null,null,null
+Daemonic Armor of Overheating,ROBE,1045,8,19,0,9,128,0,30,12,10,FALSE,FALSE,null,null,null,null
+Fervid Dream Reaver Armor,ROBE,1219,7,0,0,8,128,117,24,13,12,TRUE,FALSE,null,null,null,null
+Fiery Chrysanthemum Coat,ROBE,1393,8,19,0,9,128,101,24,0,12,TRUE,FALSE,null,null,null,null
+Fire Fairy Kei Dress,ROBE,1567,0,17,0,8,128,117,24,10,12,FALSE,FALSE,null,null,null,null
+Hunhau's Meteoric Mail,ROBE,1219,10,19,0,0,112,117,27,13,9,FALSE,FALSE,null,null,null,null
+Khonsu's Searing Raiment,ROBE,1393,10,19,0,7,0,167,18,12,10,FALSE,FALSE,null,null,null,null
+Wastelander's Scorched Armor,ROBE,1393,9,22,0,10,112,0,27,9,9,FALSE,FALSE,null,null,null,null
+Xibalba Meteoric Boots,BOOTS,903,0,16,0,4,146,146,43,12,8,FALSE,FALSE,null,null,null,null
+Avatar's Boots of Wrath,BOOTS,1161,8,0,0,4,146,146,43,10,8,FALSE,FALSE,null,null,null,null
+Daemonic Wraps of Overheating,BOOTS,1032,9,14,0,5,146,0,35,8,10,FALSE,FALSE,null,null,null,null
+Fervid Dream Reaver Boots,BOOTS,1161,8,0,0,4,146,146,43,10,8,FALSE,FALSE,null,null,null,null
+High Octane Traveler Shoes,BOOTS,1032,9,14,0,5,146,0,35,8,10,FALSE,FALSE,null,null,null,null
+Hunhau's Meteoric Boots,BOOTS,1161,7,18,0,0,128,146,39,10,7,FALSE,FALSE,null,null,null,null
+Wastelander's Scorched Boots,BOOTS,774,9,16,0,5,128,0,39,11,7,FALSE,FALSE,null,null,null,null
+Daemonic Staff of Overheating,WAND,0,0,0,213,4,145,78,24,0,14,FALSE,FALSE,TEAR,null,null,null
+Fervid Dream Reaver Boomerang,WAND,0,0,0,243,3,146,88,30,0,11,FALSE,FALSE,TEAR,null,null,null
+Fire Fairy Kei Parasol,WAND,0,0,19,0,3,145,88,30,0,12,FALSE,FALSE,TEAR,null,null,null
+Hunhau's Meteoric Sword,WAND,0,0,21,213,0,127,88,27,0,10,FALSE,FALSE,TEAR,null,null,null
+Xibalba Meteoric Sword,WAND,0,0,19,0,3,145,88,30,0,12,FALSE,FALSE,TEAR,null,null,null
+Daemonic Ring of Overheating,RING,0,20,0,0,0,115,0,17,0,0,FALSE,FALSE,TEAR,CIRCLE,SQUARE,null
+Fervid Dream Reaver Ring,RING,513,18,0,0,0,115,0,17,0,0,FALSE,FALSE,TEAR,CIRCLE,SQUARE,null
+Fiery Chrysanthemum Band,RING,456,20,0,0,0,142,0,13,0,0,FALSE,FALSE,TEAR,CIRCLE,SQUARE,null
+Xibalba Meteoric Athame,ATHAME,1074,17,0,0,0,0,0,25,0,0,FALSE,FALSE,TEAR,CIRCLE,CIRCLE,SQUARE
+Fiery Chrysanthemum Knife,ATHAME,955,19,0,0,0,0,76,25,0,0,FALSE,FALSE,TEAR,CIRCLE,CIRCLE,TRIANGLE
+Fervid Dream Reaver Knife,ATHAME,1074,17,0,0,0,0,89,25,0,0,FALSE,FALSE,TEAR,CIRCLE,CIRCLE,SQUARE
+Fire Fairy Kei Knife,ATHAME,1074,17,0,0,0,9,0,25,0,0,FALSE,FALSE,TEAR,CIRCLE,CIRCLE,SQUARE
+Fire Fairy Kei Box,DECK,180,0,0,0,0,87,67,0,0,0,FALSE,FALSE,CIRCLE,null,null,null
+Fervid Dream Reaver Deck,DECK,140,0,0,0,0,87,86,0,0,0,FALSE,FALSE,CIRCLE,null,null,null
+Fiery Chrysanthemum Deck,DECK,0,0,0,120,0,87,76,0,0,0,FALSE,FALSE,CIRCLE,null,null,null
+Avatar's Amulet of Wrath,AMULET,466,0,0,196,0,0,80,0,6,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
+Fervid Dream Reaver Amulet,AMULET,466,0,0,196,0,0,80,0,6,0,TRUE,FALSE,CIRCLE,TRIANGLE,null,null
+Fire Fairy Kei Necklace,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
+Xibalba Meteoric Amulet,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
+Stompy-Bront,PET,0,0,0,0,0,0,0,4,0,0,FALSE,FALSE,null,null,null,null
+Raging-Bull,PET,0,0,0,0,0,0,0,0,0,0,TRUE,FALSE,null,null,null,null
+Stompy-Boy,MOUNT,0,0,0,0,0,0,0,4,0,0,FALSE,FALSE,null,null,null,null
+Fire-Ghulture,MOUNT,0,0,0,0,0,0,0,3,0,0,FALSE,FALSE,null,null,null,null
+Roc,MOUNT,0,3,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
+Clockwork-Courser,MOUNT,0,0,0,0,0,0,0,0,0,2,FALSE,FALSE,null,null,null,null

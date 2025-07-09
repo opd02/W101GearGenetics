@@ -1,29 +1,49 @@
 package me.opd;
 
+import me.opd.DataReading.Gear;
 import me.opd.DataReading.StatBlock;
 
 public class Fitness {
     public static double evaluate(Individual individual) {
         StatBlock stats = individual.evaluateStats().addBaseStats();
 
-        //TODO Normalize weights and get the correct divisors
-        //TODO Make the weights configurable or enterable on run with scanner
         double score = 0;
-        score += 5 * (stats.health / 30.0);
-        score += 3 * (stats.powerpip / 200.0);
-        score += 2 * (stats.shadowpip / 20.0);
-        score += 1 * (stats.accuracy / 1500.0);
-        score += 1 * (stats.pipconversion / 10.0);
-        score += 5 * (stats.critical / 30.0);
-        score += 3 * (stats.criticalblock / 200.0);
-        score += 2 * (stats.resist / 20.0);
-        score += 1 * (stats.pierce / 10.0);
-        score += 1 * (stats.damage / 10.0);
-        score += stats.proviceblade ? 55 : -20;
-        score += stats.providesharpen ? 55 : -20;
-        //TODO add other corrections, like sharpen blade + item card blade, not having 100% powerpip, certain accuraacy
+
+        // Priority: Damage > Pierce > Powerpip
+        score += 25 * normalize(stats.damage, 238);      // cap ~238
+        score += 11  * normalize(stats.pierce, 65);       // cap ~65
+        score += 5  * normalize(stats.powerpip, 100);    // must be 100+
+
+        // Secondary stats
+        score += 3  * normalize(stats.critical, 850);
+        score += 4  * normalize(stats.shadowpip, 60);
+        score += 2  * normalize(stats.resist, 50);
+        score += 1  * normalize(stats.accuracy, 40);
+        score += 1  * normalize(stats.criticalblock, 700);
+        score += 2  * normalize(stats.health, 10000);
+        score += 0.5 * normalize(stats.pipconversion, 300);
+
+        // Power pip requirement
+        if (stats.powerpip < 100) score -= 100;
+
+        // Blade/sharpen logic
+        int bladeCount = 0;
+        int sharpenCount = 0;
+
+        for (Gear gear : individual.gearSet.values()) {
+            if (gear.baseStats.proviceblade) bladeCount++;
+            if (gear.baseStats.providesharpen) sharpenCount++;
+        }
+
+        score += bladeCount == 1 ? 50 : (bladeCount > 1 ? -40 * (bladeCount - 1) : -25);
+        score += sharpenCount == 1 ? 200 : (sharpenCount > 1 ? -40 * (sharpenCount - 1) : -25);
 
         return score;
     }
+
+    private static double normalize(double stat, double maxExpected) {
+        return Math.min(stat / maxExpected, 1.0); // never reward overcapping
+    }
 }
+
 
