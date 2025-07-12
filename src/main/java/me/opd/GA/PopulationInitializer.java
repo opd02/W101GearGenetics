@@ -40,7 +40,7 @@ public class PopulationInitializer {
 
             }
             Set<PetTrait> petTraitSet = new HashSet<>();
-            while (petTraitSet.size() < 5) {
+            while (petTraitSet.size() < 6) {
                 petTraitSet.add(traits.get(rand.nextInt(traits.size())));
             }
             ind.petTraits = new ArrayList<>(petTraitSet);

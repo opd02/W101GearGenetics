@@ -63,10 +63,10 @@ public class GeneticUtils {
         Set<PetTrait> seen = new HashSet<>();
         Random rand = new Random();
 
-        while (newTraits.size() < 5) {
+        while (newTraits.size() < 6) {
             PetTrait trait = Math.random() < GAConfig.CROSSOVER_RATE
-                    ? a.petTraits.get(rand.nextInt(5))
-                    : b.petTraits.get(rand.nextInt(5));
+                    ? a.petTraits.get(rand.nextInt(6))
+                    : b.petTraits.get(rand.nextInt(6));
 
             if (!seen.contains(trait)) {
                 newTraits.add(trait);

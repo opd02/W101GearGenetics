@@ -67,7 +67,8 @@ public class CopyUtils {
             copy.resist = original.resist;
             copy.pierce = original.pierce;
             copy.damage = original.damage;
-            copy.proviceblade = original.proviceblade;
+            copy.provideblade = original.provideblade;
+            copy.providesharpen = original.providesharpen;
 
             return copy;
         }

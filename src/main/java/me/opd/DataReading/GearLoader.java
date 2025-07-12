@@ -90,7 +90,7 @@ public class GearLoader {
         stats.damage = Integer.parseInt(fields[9].trim());
         stats.resist = Integer.parseInt(fields[10].trim());
         stats.pierce = Integer.parseInt(fields[11].trim());
-        stats.proviceblade = Boolean.parseBoolean(fields[12].trim());
+        stats.provideblade = Boolean.parseBoolean(fields[12].trim());
         stats.providesharpen = Boolean.parseBoolean(fields[13].trim());
         return stats;
     }

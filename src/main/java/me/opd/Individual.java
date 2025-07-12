@@ -9,6 +9,7 @@ import me.opd.PetHandeling.Pet;
 import me.opd.PetHandeling.PetTrait;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Individual {
     public Map<GearSlot, Gear> gearSet = new HashMap<>();
@@ -32,10 +33,24 @@ public class Individual {
         for (PetTrait trait : petTraits) {
             total.add(trait.statBonus);
         }
+        if(this.gearSet.get(GearSlot.PET).name.equals("Scratchy Frillasaur") &&
+                this.gearSet.get(GearSlot.MOUNT).name.equals("Stompy-Bronto")){
+            total.addDamage(8);
+        }
 
         return total;
     }
-    public String statsToString(){
+
+    public List<Jewel> getJewels() {
+        return this.jewels.values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    public List<Gear> getGear(){
+        return this.gearSet.values().stream().toList();
+    }
+        public String statsToString(){
         return evaluateStats().addBaseStats().toString();
     }
 }

@@ -44,9 +44,9 @@ Avatar's Amulet of Wrath,AMULET,466,0,0,196,0,0,80,0,6,0,FALSE,FALSE,CIRCLE,TRIA
 Fervid Dream Reaver Amulet,AMULET,466,0,0,196,0,0,80,0,6,0,TRUE,FALSE,CIRCLE,TRIANGLE,null,null
 Fire Fairy Kei Necklace,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
 Xibalba Meteoric Amulet,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
-Stompy-Bront,PET,0,0,0,0,0,0,0,4,0,0,FALSE,FALSE,null,null,null,null
+Scratchy Frillasaur,PET,0,0,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Raging-Bull,PET,0,0,0,0,0,0,0,0,0,0,TRUE,FALSE,null,null,null,null
-Stompy-Boy,MOUNT,0,0,0,0,0,0,0,4,0,0,FALSE,FALSE,null,null,null,null
+Stompy-Bronto,MOUNT,0,0,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Fire-Ghulture,MOUNT,0,0,0,0,0,0,0,3,0,0,FALSE,FALSE,null,null,null,null
 Roc,MOUNT,0,3,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Clockwork-Courser,MOUNT,0,0,0,0,0,0,0,0,0,2,FALSE,FALSE,null,null,null,null

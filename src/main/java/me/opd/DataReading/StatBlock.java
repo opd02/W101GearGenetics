@@ -11,7 +11,7 @@ public class StatBlock {
     public int resist = 0;
     public int damage = 0;
     public int pierce = 0;
-    public boolean proviceblade = false;
+    public boolean provideblade = false;
     public boolean providesharpen = false;
 
     public void add(StatBlock other) {
@@ -23,10 +23,17 @@ public class StatBlock {
         this.critical += other.critical;
         this.criticalblock += other.criticalblock;
         this.resist += other.resist;
-        this.proviceblade |= other.proviceblade;
+        this.provideblade |= other.provideblade;
         this.pierce += other.pierce;
         this.damage += other.damage;
-        this.providesharpen |= other.providesharpen;
+        if((!this.providesharpen && other.providesharpen) || (this.providesharpen && !other.providesharpen)) {
+            this.providesharpen = true;
+        }
+    }
+
+    public StatBlock addDamage(int damage) {
+        this.damage += damage;
+        return this;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class StatBlock {
                 ", resist=" + resist +
                 ", damage=" + damage +
                 ", pierce=" + pierce +
-                ", proviceblade=" + proviceblade +
+                ", provideblade=" + provideblade +
                 ", providesharpen=" + providesharpen +
                 '}';
     }
