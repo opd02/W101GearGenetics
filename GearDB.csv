@@ -1,6 +1,10 @@
 name,slot,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,providesharpen,socket1,socket2,socket3,socket4
+Tense Monster Hide Suit,ROBE,1826,10,19,0,7,0,151,26,15,8,FALSE,FALSE,null,null,null,null
+Tense Abomination Suit,ROBE,1279,7,0,0,8,147,132,26,17,12,TRUE,FALSE,null,null,null,null
+Tense Monster Hide Crown,HAT,837,8,17,0,9,0,121,31,13,7,FALSE,FALSE,null,null,null,null
+Tense Abomination Crown,HAT,942,9,0,0,6,213,106,28,10,9,TRUE,FALSE,null,null,null,null
 Xibalba Meteoric Helm,HAT,698,0,19,0,6,188,94,36,11,8,FALSE,FALSE,null,null,null,null
-Avatar's Crown of Wrath,HAT,898,9,0,0,6,188,94,36,9,8,TRUE,FALSE,null,null,null,null
+Avatar's Crown of Wrath,HAT,898,9,0,0,6,188,94,36,9,8,FALSE,FALSE,null,null,null,null
 Daemonic Crown of Overheating,HAT,798,10,17,0,7,188,0,29,8,10,FALSE,FALSE,null,null,null,null
 Fervid Dream Reaver Hood,HAT,898,9,0,0,6,188,94,36,9,8,FALSE,FALSE,null,null,null,null
 Fiery Chrysanthemum Cowl,HAT,798,8,21,0,7,188,81,29,0,10,TRUE,FALSE,null,null,null,null
@@ -46,7 +50,21 @@ Fire Fairy Kei Necklace,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIAN
 Xibalba Meteoric Amulet,AMULET,466,0,0,196,0,0,62,0,8,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
 Scratchy Frillasaur,PET,0,0,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Raging-Bull,PET,0,0,0,0,0,0,0,0,0,0,TRUE,FALSE,null,null,null,null
+Fire Class Pet,PET,0,0,0,0,0,0,0,0,0,0,TRUE,TRUE,null,null,null,null
 Stompy-Bronto,MOUNT,0,0,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Fire-Ghulture,MOUNT,0,0,0,0,0,0,0,3,0,0,FALSE,FALSE,null,null,null,null
 Roc,MOUNT,0,3,0,0,0,0,0,0,0,0,FALSE,FALSE,null,null,null,null
 Clockwork-Courser,MOUNT,0,0,0,0,0,0,0,0,0,2,FALSE,FALSE,null,null,null,null
+Tense Abomination Stompers,BOOTS,1218,8,0,0,4,166,164,46,11,9,FALSE,FALSE,null,null,null,null
+Tense Monster Hide Stompers,BOOTS,1083,7,14,0,6,0,188,37,15,7,FALSE,FALSE,null,null,null,null
+Tense Abomination Glaive,WAND,0,0,0,262,3,166,99,32,0,12,FALSE,FALSE,TEAR,null,null,null
+Tense Monster Hide Glaive,WAND,0,0,17,295,3,0,109,19,0,12,FALSE,FALSE,SQUARE,null,null,null
+Tense Abomination Athame,ATHAME,1126,17,0,0,0,0,100,28,0,0,FALSE,FALSE,TEAR,CIRCLE,CIRCLE,SQUARE
+Tense Monster Hide Athame,ATHAME,1001,19,0,0,0,0,0,22,0,0,FALSE,FALSE,TEAR,CIRCLE,SQUARE,TRIANGLE
+Tense Abomination Amulet,AMULET,489,0,0,210,0,0,90,0,7,0,FALSE,FALSE,CIRCLE,TRIANGLE,null,null
+Tense Monster Hide Amulet,AMULET,698,0,0,236,0,0,80,0,8,0,FALSE,FALSE,SQUARE,TRIANGLE,null,null
+Tense Abomination Ring,RING,538,18,0,0,0,131,0,18,0,0,FALSE,FALSE,TEAR,CIRCLE,SQUARE,null
+Tense Monster Hide Ring,RING,0,20,0,0,0,132,0,11,0,0,FALSE,FALSE,TEAR,TEAR,SQUARE,null
+Tense Abomination Box,DECK,147,0,0,0,0,99,97,0,0,0,FALSE,FALSE,CIRCLE,null,null,null
+Tense Monster Hide Box,DECK,168,0,0,130,0,0,107,0,0,0,FALSE,FALSE,SQUARE,null,null,null
+Ardent Attunement Rod (Level 180+),WAND,0,0,19,0,3,165,99,32,0,12,FALSE,FALSE,TEAR,null,null,null

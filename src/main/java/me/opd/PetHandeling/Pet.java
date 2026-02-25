@@ -11,6 +11,7 @@ public class Pet {
     public StatBlock getTotalStats() {
         StatBlock total = new StatBlock();
         for (PetTrait trait : traits) {
+            //TODO add Mighty and other stat improving talents in correctly
             total.add(trait.statBonus);
         }
         return total;

@@ -1,10 +1,10 @@
 name,jeweltype,health,powerpip,shadowpip,pipconversion,accuracy,critical,criticalblock,damage,resist,pierce,provideblade,providesharpen
-Unearthly Damage Ruby +10%,CIRCLE,0,0,0,0,0,0,0,10,0,0,FALSE,FALSE
+Bright Damage Ruby +11%,CIRCLE,0,0,0,0,0,0,0,10,0,0,FALSE,FALSE
 Lustrous PIP Opal +10%,TRIANGLE,0,10,0,0,0,0,0,0,0,0,FALSE,FALSE
 Dual Fireblade Ruby,TRIANGLE,0,0,0,0,0,0,0,0,0,0,TRUE,FALSE
 Flawless Accurate Ruby +16%,TRIANGLE,0,0,0,0,16,0,0,0,0,0,FALSE,FALSE
 Sharpened Blade Opal,TEAR,0,0,0,0,0,0,0,0,0,0,FALSE,TRUE
 Flawless Health Opal +155,TEAR,155,0,0,0,0,0,0,0,0,0,FALSE,FALSE
-Unearthly Health Ruby +595,SQUARE,595,0,0,0,0,0,0,0,0,0,FALSE,FALSE
+Bright Health Ruby +625,SQUARE,625,0,0,0,0,0,0,0,0,0,FALSE,FALSE
 Unearthly Blocking Ruby +52,SQUARE,0,0,0,0,0,0,52,0,0,0,FALSE,FALSE
 Polished Piercing Ruby +6%,CIRCLE,0,0,0,0,0,0,0,0,0,6,FALSE,FALSE

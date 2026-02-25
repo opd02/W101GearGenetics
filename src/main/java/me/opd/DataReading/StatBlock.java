@@ -55,7 +55,7 @@ public class StatBlock {
     }
 
     public StatBlock addBaseStats(){
-        this.health += 4303;
+        this.health += 4557;
         this.powerpip += 40;
         this.shadowpip += 85;
         this.pipconversion += 364;

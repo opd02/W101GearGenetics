@@ -35,7 +35,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("TOTAL Stats with Base Stats:");
+        System.out.println("TOTAL stats with base stats included:");
         System.out.println(best.statsToString());
     }
 }
