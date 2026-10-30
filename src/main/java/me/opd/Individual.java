@@ -1,56 +1,36 @@
 package me.opd;
-
-import me.opd.DataReading.Gear;
-import me.opd.DataReading.GearSlot;
-import me.opd.DataReading.StatBlock;
+import me.opd.DataReading.*;
 import me.opd.JewelHandeling.Jewel;
-import me.opd.JewelHandeling.Socket;
-import me.opd.PetHandeling.Pet;
-import me.opd.PetHandeling.PetTrait;
-
 import java.util.*;
-import java.util.stream.Collectors;
-
 public class Individual {
-    public Map<GearSlot, Gear> gearSet = new HashMap<>();
-    public Map<GearSlot, List<Jewel>> jewels = new HashMap<>();
-    public List<PetTrait> petTraits = new ArrayList<>(); // exactly 5
-
+    public Map<GearSlot,Gear> gearSet = new EnumMap<>(GearSlot.class);
+    /** Lists retain socket positions, with null representing an empty socket. */
+    public Map<GearSlot,List<Jewel>> jewels = new EnumMap<>(GearSlot.class);
+    public Individual copyGenome() {
+        Individual copy = new Individual(); copy.gearSet.putAll(gearSet);
+        jewels.forEach((slot,list) -> copy.jewels.put(slot,new ArrayList<>(list)));
+        return copy; // Catalog records are never mutated by search operations.
+    }
     public StatBlock evaluateStats() {
         StatBlock total = new StatBlock();
-        for (Gear gear : gearSet.values()) {
-            total.add(gear.baseStats);
-            List<Socket> sockets = gear.sockets;
-            List<Jewel> jewelsForSlot = jewels.getOrDefault(gear.slot, List.of());
-
-            for (int i = 0; i < Math.min(sockets.size(), jewelsForSlot.size()); i++) {
-                Jewel jewel = jewelsForSlot.get(i);
-                if (jewel != null) {
-                    total.add(jewel.statBonus);
-                }
-            }
+        for (var entry : gearSet.entrySet()) {
+            Gear gear = entry.getValue(); total.add(gear.baseStats);
+            if (gear.pet != null) total.add(gear.pet.getTotalStats());
+            for (Jewel jewel : jewels.getOrDefault(entry.getKey(),List.of()))
+                if (jewel != null) total.add(jewel.statBonus);
         }
-        for (PetTrait trait : petTraits) {
-            total.add(trait.statBonus);
-        }
-        if(this.gearSet.get(GearSlot.PET).name.equals("Scratchy Frillasaur") &&
-                this.gearSet.get(GearSlot.MOUNT).name.equals("Stompy-Bronto")){
-            total.addDamage(8);
-        }
-
         return total;
     }
-
-    public List<Jewel> getJewels() {
-        return this.jewels.values().stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+    /** Length-prefixed identifiers avoid delimiter collisions in imported IDs. */
+    public String signature() {
+        StringBuilder key = new StringBuilder();
+        for (GearSlot slot : GearSlot.values()) if (gearSet.containsKey(slot)) {
+            key.append(slot).append('=');
+            appendId(key,gearSet.get(slot).id);
+            for (Jewel jewel : jewels.getOrDefault(slot,List.of())) appendId(key,jewel == null ? "" : jewel.id);
+            key.append(';');
+        }
+        return key.toString();
     }
-
-    public List<Gear> getGear(){
-        return this.gearSet.values().stream().toList();
-    }
-        public String statsToString(){
-        return evaluateStats().addBaseStats().toString();
-    }
+    private static void appendId(StringBuilder key,String id) { key.append(id.length()).append(':').append(id); }
 }

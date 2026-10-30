@@ -1,81 +1,37 @@
 package me.opd;
-
-import me.opd.DataReading.Gear;
-import me.opd.DataReading.GearSlot;
-import me.opd.GA.GAConfig;
+import me.opd.Optimization.SearchSpace;
+import me.opd.DataReading.*;
 import me.opd.JewelHandeling.Jewel;
-import me.opd.JewelHandeling.Socket;
-import me.opd.PetHandeling.PetTrait;
-import me.opd.Utils.CopyUtils;
-
 import java.util.*;
-
 public class GeneticUtils {
-    public static Individual mutate(Individual ind, List<Gear> gearPool, List<Jewel> jewelPool, List<PetTrait> petTraits) {
-        Random rand = new Random();
-        Individual copy = CopyUtils.deepCopy(ind); // implement deep copy
-
-        // Mutate one gear slot
-        GearSlot slot = GearSlot.values()[rand.nextInt(GearSlot.values().length)];
-        List<Gear> options = gearPool.stream()
-                .filter(g -> g.slot == slot).toList();
-        if (!options.isEmpty()) {
-            copy.gearSet.put(slot, options.get(rand.nextInt(options.size())));
+    public static Individual crossover(Individual a,Individual b,SearchSpace space,Random random) {
+        Individual child=new Individual();
+        for (GearSlot slot : space.slots) {
+            Individual parent=random.nextBoolean()?a:b;
+            child.gearSet.put(slot,parent.gearSet.get(slot));
+            child.jewels.put(slot,new ArrayList<>(parent.jewels.get(slot)));
         }
-
-        // Mutate one jewel on that gear
-        List<Socket> sockets = copy.gearSet.get(slot).sockets;
-        List<Jewel> jewelsForSlot = new ArrayList<>();
-        for (Socket s : sockets) {
-            List<Jewel> validJewels = jewelPool.stream()
-                    .filter(j -> j.type == s.type)
-                    .toList();
-            jewelsForSlot.add(validJewels.get(rand.nextInt(validJewels.size())));
-        }
-        copy.jewels.put(slot, jewelsForSlot);
-
-        if (Math.random() < GAConfig.MUTATION_RATE) { // 30% chance to mutate a pet trait
-            int index = rand.nextInt(copy.petTraits.size());
-            PetTrait replacement;
-            do {
-                replacement = petTraits.get(rand.nextInt(petTraits.size()));
-            } while (copy.petTraits.contains(replacement)); // avoid duplicates
-
-            copy.petTraits.set(index, replacement);
-        }
-
-        return copy;
+        space.repairJewels(child,random);
+        return child;
     }
-
-    public static Individual crossover(Individual a, Individual b) {
-        Individual child = new Individual();
-        for (GearSlot slot : GearSlot.values()) {
-            if (Math.random() < GAConfig.CROSSOVER_RATE) {
-                child.gearSet.put(slot, a.gearSet.get(slot));
-                child.jewels.put(slot, a.jewels.get(slot));
-            } else {
-                child.gearSet.put(slot, b.gearSet.get(slot));
-                child.jewels.put(slot, b.jewels.get(slot));
+    public static Individual mutate(Individual parent,SearchSpace space,Random random) {
+        Individual child=parent.copyGenome();
+        GearSlot slot=space.slots.get(random.nextInt(space.slots.size()));
+        if (random.nextBoolean()) {
+            List<Gear> choices=space.gear.get(slot);
+            child.gearSet.put(slot,choices.get(random.nextInt(choices.size())));
+            child.jewels.put(slot,new ArrayList<>()); // new holder; resolve each positional socket
+        } else {
+            var lists=space.socketChoices(child.gearSet.get(slot));
+            if (!lists.isEmpty()) {
+                int index=random.nextInt(lists.size());
+                if (!space.request.lockedJewels.containsKey(slot + ":" + index)) {
+                    List<Jewel> options=lists.get(index);
+                    child.jewels.get(slot).set(index,options.get(random.nextInt(options.size())));
+                }
             }
         }
-
-        List<PetTrait> newTraits = new ArrayList<>();
-        Set<PetTrait> seen = new HashSet<>();
-        Random rand = new Random();
-
-        while (newTraits.size() < 6) {
-            PetTrait trait = Math.random() < GAConfig.CROSSOVER_RATE
-                    ? a.petTraits.get(rand.nextInt(6))
-                    : b.petTraits.get(rand.nextInt(6));
-
-            if (!seen.contains(trait)) {
-                newTraits.add(trait);
-                seen.add(trait);
-            }
-        }
-        child.petTraits = newTraits;
-
+        space.repairJewels(child,random);
         return child;
     }
 }
-

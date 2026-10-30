@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "gear": [
+    {
+      "id": "demo-hat",
+      "name": "Synthetic demo-hat",
+      "slot": "HAT",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 60,
+          "DAMAGE:UNIVERSAL": 10,
+          "HEALTH:UNIVERSAL": 200
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-hat-alt",
+      "name": "Synthetic demo-hat-alt",
+      "slot": "HAT",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 70,
+          "DAMAGE:UNIVERSAL": 10,
+          "HEALTH:UNIVERSAL": 100
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-robe",
+      "name": "Synthetic demo-robe",
+      "slot": "ROBE",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 40,
+          "DAMAGE:UNIVERSAL": 10,
+          "RESISTANCE:UNIVERSAL": 20,
+          "HEALTH:UNIVERSAL": 800
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-boots",
+      "name": "Synthetic demo-boots",
+      "slot": "BOOTS",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 10,
+          "DAMAGE:FIRE": 20,
+          "DAMAGE:UNIVERSAL": 10,
+          "RESISTANCE:UNIVERSAL": 20,
+          "HEALTH:UNIVERSAL": 500
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-boots-alt",
+      "name": "Synthetic demo-boots-alt",
+      "slot": "BOOTS",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 10,
+          "DAMAGE:FIRE": 30,
+          "DAMAGE:UNIVERSAL": 10,
+          "RESISTANCE:UNIVERSAL": 20,
+          "HEALTH:UNIVERSAL": 300
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-wand",
+      "name": "Synthetic demo-wand",
+      "slot": "WAND",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:UNIVERSAL": 10
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-athame",
+      "name": "Synthetic demo-athame",
+      "slot": "ATHAME",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "POWER_PIP_CHANCE:UNIVERSAL": 30
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-amulet",
+      "name": "Synthetic demo-amulet",
+      "slot": "AMULET",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {}
+      },
+      "sockets": [
+        {
+          "type": "TEAR"
+        }
+      ],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-ring",
+      "name": "Synthetic demo-ring",
+      "slot": "RING",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "POWER_PIP_CHANCE:UNIVERSAL": 30
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-deck",
+      "name": "Synthetic demo-deck",
+      "slot": "DECK",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "ACCURACY:STORM": 35
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-pet",
+      "name": "Synthetic demo-pet",
+      "slot": "PET",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {}
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z",
+      "pet": {
+        "name": "Synthetic owned pet",
+        "hypothetical": false,
+        "traits": [
+          {
+            "id": "demo-talent",
+            "name": "Synthetic health talent",
+            "statBonus": {
+              "values": {
+                "HEALTH:UNIVERSAL": 50
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "demo-mount",
+      "name": "Synthetic demo-mount",
+      "slot": "MOUNT",
+      "level": 1,
+      "schools": [],
+      "baseStats": {
+        "values": {}
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-high-level",
+      "name": "Synthetic demo-high-level",
+      "slot": "HAT",
+      "level": 180,
+      "schools": [],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 999
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    },
+    {
+      "id": "demo-fire-only",
+      "name": "Synthetic demo-fire-only",
+      "slot": "HAT",
+      "level": 1,
+      "schools": [
+        "FIRE"
+      ],
+      "baseStats": {
+        "values": {
+          "DAMAGE:STORM": 999
+        }
+      },
+      "sockets": [],
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    }
+  ],
+  "jewels": [
+    {
+      "id": "demo-health",
+      "name": "Synthetic health tear",
+      "type": "TEAR",
+      "level": 1,
+      "schools": [],
+      "statBonus": {
+        "values": {
+          "HEALTH:UNIVERSAL": 155
+        }
+      },
+      "complete": true,
+      "source": "synthetic-fixture",
+      "gameVersion": "fixture-v1",
+      "importedAt": "2026-10-30T00:00:00Z"
+    }
+  ],
+  "setBonuses": [],
+  "baseStats": {},
+  "extensions": {
+    "warning": "Synthetic fixtures demonstrate software behavior; none of these are verified game records or base values."
+  }
+}

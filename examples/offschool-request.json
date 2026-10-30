@@ -1,0 +1,91 @@
+{
+  "wizard": {
+    "school": "DEATH",
+    "level": 170,
+    "baseOverrides": {
+      "values": {
+        "HEALTH:UNIVERSAL": 4000,
+        "POWER_PIP_CHANCE:UNIVERSAL": 40
+      }
+    },
+    "ownedOnly": false
+  },
+  "targets": [
+    {
+      "stat": "DAMAGE",
+      "school": "STORM",
+      "mode": "MINIMUM",
+      "value": 150,
+      "mandatory": true,
+      "weight": 1,
+      "scale": 150
+    },
+    {
+      "stat": "DAMAGE",
+      "school": "FIRE",
+      "mode": "MINIMUM",
+      "value": 60,
+      "mandatory": true,
+      "weight": 1,
+      "scale": 60
+    },
+    {
+      "stat": "RESISTANCE",
+      "school": "UNIVERSAL",
+      "mode": "MINIMUM",
+      "value": 40,
+      "mandatory": true,
+      "weight": 1,
+      "scale": 40
+    },
+    {
+      "stat": "POWER_PIP_CHANCE",
+      "school": "UNIVERSAL",
+      "mode": "MINIMUM",
+      "value": 100,
+      "mandatory": true,
+      "weight": 1,
+      "scale": 100
+    },
+    {
+      "stat": "ACCURACY",
+      "school": "STORM",
+      "mode": "PREFERRED",
+      "value": 35,
+      "mandatory": false,
+      "weight": 1,
+      "scale": 35,
+      "abovePenalty": 0
+    },
+    {
+      "stat": "HEALTH",
+      "school": "UNIVERSAL",
+      "mode": "MAXIMIZE",
+      "value": 0,
+      "mandatory": false,
+      "weight": 1,
+      "scale": 1000
+    }
+  ],
+  "lockedItems": {
+    "DECK": "demo-deck"
+  },
+  "lockedJewels": {
+    "AMULET:0": "demo-health"
+  },
+  "excludedIds": [
+    "demo-high-level"
+  ],
+  "search": {
+    "seed": 7,
+    "populationSize": 80,
+    "generations": 50,
+    "mutationRate": 0.5,
+    "crossoverRate": 0.7,
+    "tournamentSize": 7,
+    "elites": 2,
+    "method": "GA"
+  },
+  "topK": 10,
+  "minDifferentSlots": 1
+}

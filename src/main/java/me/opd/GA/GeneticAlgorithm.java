@@ -1,59 +1,34 @@
 package me.opd.GA;
-
-import me.opd.DataReading.Gear;
-import me.opd.Fitness;
-import me.opd.GeneticUtils;
-import me.opd.Individual;
-import me.opd.JewelHandeling.Jewel;
-import me.opd.PetHandeling.PetTrait;
-import me.opd.Utils.CopyUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import me.opd.*;
+import me.opd.Optimization.*;
+import java.util.*;
+import java.util.function.Consumer;
 public class GeneticAlgorithm {
-    public static Individual run(List<Gear> gearPool, List<Jewel> jewelPool, List<PetTrait> traits) {
-        List<Individual> population = PopulationInitializer.initialize(gearPool, jewelPool, traits);
-        Individual best = null;
-        double bestFitness = Double.NEGATIVE_INFINITY;
-
-        for (int gen = 0; gen < GAConfig.GENERATIONS; gen++) {
-            List<Individual> newGen = new ArrayList<>();
-
-            while (newGen.size() < GAConfig.POPULATION_SIZE) {
-                Individual parent1 = Selection.tournament(population);
-                Individual parent2 = Selection.tournament(population);
-
-                Individual child;
-
-                if (Math.random() < GAConfig.CROSSOVER_RATE) {
-                    child = GeneticUtils.crossover(parent1, parent2);
-                } else {
-                    child = CopyUtils.deepCopy(parent1);
-                }
-
-                if (Math.random() < GAConfig.MUTATION_RATE) {
-                    child = GeneticUtils.mutate(child, gearPool, jewelPool, traits);
-                }
-
-                newGen.add(child);
+    public static OptimizationResult run(SearchSpace space,Consumer<OptimizationResult.Progress> progress) {
+        GAConfig config=space.request.search;
+        Random random=new Random(config.seed);
+        FitnessEvaluator evaluator=new FitnessEvaluator(space);
+        List<Individual> population=PopulationInitializer.initialize(space,random);
+        List<OptimizationResult.Progress> history=new ArrayList<>();
+        for (int generation=0;generation<=config.generations;generation++) {
+            List<FitnessEvaluator.Scored> ranked=population.stream().map(evaluator::evaluate)
+                .sorted(FitnessEvaluator.BEST_FIRST).toList();
+            var best=evaluator.evaluated().stream().min(FitnessEvaluator.BEST_FIRST).orElseThrow();
+            var snapshot=new OptimizationResult.Progress(generation,best.fitness().feasible(),best.fitness().hardDeficit(),
+                best.fitness().objective(),evaluator.evaluated().size());
+            history.add(snapshot); progress.accept(snapshot);
+            if (generation==config.generations) break;
+            List<Individual> next=new ArrayList<>();
+            for (int i=0;i<config.elites;i++) next.add(ranked.get(i).build().copyGenome());
+            while (next.size()<config.populationSize) {
+                Individual a=Selection.tournament(ranked,config.tournamentSize,random).build();
+                Individual b=Selection.tournament(ranked,config.tournamentSize,random).build();
+                Individual child=random.nextDouble()<config.crossoverRate ? GeneticUtils.crossover(a,b,space,random) : a.copyGenome();
+                if (random.nextDouble()<config.mutationRate) child=GeneticUtils.mutate(child,space,random);
+                next.add(child);
             }
-
-            population = newGen;
-
-            // Check for best individual
-            for (Individual ind : population) {
-                double fit = Fitness.evaluate(ind);
-                if (fit > bestFitness) {
-                    bestFitness = fit;
-                    best = CopyUtils.deepCopy(ind);
-                }
-            }
-
-            System.out.printf("Gen %d — Best Fitness: %.4f%n", gen + 1, bestFitness);
+            population=next;
         }
-
-        return best;
+        return OptimizationResult.create(space,evaluator,history,false);
     }
 }
-

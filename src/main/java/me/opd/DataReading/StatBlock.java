@@ -1,65 +1,32 @@
 package me.opd.DataReading;
-
+import java.util.*;
+/** Raw additive bonuses. Effective totals retain their original universal contributions. */
 public class StatBlock {
-    public int health = 0;
-    public int powerpip = 0;
-    public int shadowpip = 0;
-    public int pipconversion = 0;
-    public int accuracy = 0;
-    public int critical = 0;
-    public int criticalblock = 0;
-    public int resist = 0;
-    public int damage = 0;
-    public int pierce = 0;
-    public boolean provideblade = false;
-    public boolean providesharpen = false;
-
-    public void add(StatBlock other) {
-        this.health += other.health;
-        this.powerpip += other.powerpip;
-        this.shadowpip += other.shadowpip;
-        this.accuracy += other.accuracy;
-        this.pipconversion += other.pipconversion;
-        this.critical += other.critical;
-        this.criticalblock += other.criticalblock;
-        this.resist += other.resist;
-        this.provideblade |= other.provideblade;
-        this.pierce += other.pierce;
-        this.damage += other.damage;
-        if((!this.providesharpen && other.providesharpen) || (this.providesharpen && !other.providesharpen)) {
-            this.providesharpen = true;
-        }
+    public Map<String, Double> values = new TreeMap<>();
+    public static String key(StatType stat, School school) {
+        Objects.requireNonNull(stat); Objects.requireNonNull(school);
+        if (!stat.schoolSpecific && school != School.UNIVERSAL)
+            throw new IllegalArgumentException(stat + " is not school-specific");
+        return stat.name() + ":" + school.name();
     }
-
-    public StatBlock addDamage(int damage) {
-        this.damage += damage;
-        return this;
+    public StatBlock put(StatType stat, School school, double value) {
+        if (!Double.isFinite(value)) throw new IllegalArgumentException("Stat must be finite");
+        values.put(key(stat, school), value); return this;
     }
-
-    @Override
-    public String toString() {
-        return "StatBlock{" +
-                "health=" + health +
-                ", powerpip=" + powerpip +
-                ", shadowpip=" + shadowpip +
-                ", pipconversion=" + pipconversion +
-                ", accuracy=" + accuracy +
-                ", critical=" + critical +
-                ", criticalblock=" + criticalblock +
-                ", resist=" + resist +
-                ", damage=" + damage +
-                ", pierce=" + pierce +
-                ", provideblade=" + provideblade +
-                ", providesharpen=" + providesharpen +
-                '}';
+    public double raw(StatType stat, School school) { return values.getOrDefault(key(stat, school), 0.0); }
+    public double effective(StatType stat, School school) {
+        return raw(stat, school) + (stat.schoolSpecific && school != School.UNIVERSAL ? raw(stat, School.UNIVERSAL) : 0);
     }
-
-    public StatBlock addBaseStats(){
-        this.health += 4557;
-        this.powerpip += 40;
-        this.shadowpip += 85;
-        this.pipconversion += 364;
-        return this;
+    public void add(StatBlock other) { other.values.forEach((key, value) -> values.merge(key, value, Double::sum)); }
+    public StatBlock copy() { StatBlock copy = new StatBlock(); copy.values.putAll(values); return copy; }
+    public void validate() {
+        if (values == null) throw new IllegalArgumentException("Missing stat values");
+        values.forEach((k,v) -> {
+            String[] parts = k.split(":", -1);
+            if (parts.length != 2) throw new IllegalArgumentException("Invalid stat key: " + k);
+            key(StatType.valueOf(parts[0]), School.valueOf(parts[1]));
+            if (v == null || !Double.isFinite(v)) throw new IllegalArgumentException("Invalid value for " + k);
+        });
     }
+    @Override public String toString() { return values.toString(); }
 }
-

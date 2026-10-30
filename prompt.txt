@@ -1,0 +1,522 @@
+# Codex Task: Upgrade W101GearGenetics into a Full Wizard101 Gear Optimizer
+
+**Repository:** https://github.com/opd02/W101GearGenetics
+
+## Project Goal
+
+I want to substantially expand my existing Java-based genetic algorithm for optimizing Wizard101 gear.
+
+The long-term objective is a tool where a player can:
+
+1. Enter their wizard's school and level.
+2. Specify desired stats, including damage, resistance, accuracy, and piercing for **every individual school**, not just their primary school.
+3. Choose which stats represent mandatory minimum requirements and which should be optimized.
+4. Lock specific gear pieces, jewels, pins, pets, or other equipment into a build.
+5. Exclude items they do not own or do not want to use.
+6. Run an optimization algorithm to discover the best achievable gear combinations.
+7. Review several recommended setups, their resulting stats, and how closely they satisfy the specified targets.
+8. Eventually import gear and stat information from Wizard101 using WizWalker or game-data extraction rather than maintaining everything manually.
+
+This is primarily a **gear optimization project, not a combat simulator**. I may later extend it to optimize four-person raid teams, so keep the core architecture reusable.
+
+Do not start a new project or rewrite everything unnecessarily. Inspect the existing repository and evolve its architecture.
+
+## Phase 0 — Repository Audit
+
+Before implementing changes, thoroughly inspect the current Maven project and identify what can be preserved, refactored, or replaced.
+
+Pay particular attention to:
+
+- `DataReading/StatBlock.java`
+- `DataReading/Gear.java`
+- `DataReading/GearLoader.java`
+- `Fitness.java`
+- `Individual.java`
+- `GeneticUtils.java`
+- `GA/GeneticAlgorithm.java`
+- `GA/PopulationInitializer.java`
+- `StatBounder.java`
+- `JewelHandeling/`
+- `PetHandeling/`
+- `Main.java`
+- Existing CSV databases
+
+Important existing problems to investigate:
+
+- The stat representation cannot distinguish individual schools.
+- Fitness weights and reference values are hardcoded.
+- Base wizard stats are hardcoded and not dependent on school and level.
+- Pet traits are treated inconsistently: some code expects five, while other code expects six.
+- Population initialization appears to have an off-by-one random-selection bug.
+- Crossover could loop indefinitely when fewer than six distinct pet traits are available.
+- Some gear/set bonuses are hardcoded by item name.
+- The current search does not support locked or excluded equipment.
+- Potential null handling, shallow-copy, mutation, socket compatibility, and CSV parsing problems.
+- `StatBounder` appears to reference shadow pip rating when calculating damage bounds.
+
+Document what you find and fix the relevant problems as part of the upgrade.
+
+Preserve the ability to load the existing CSV files, even if a more capable replacement format is introduced.
+
+## Phase 1 — Redesign the Stat System
+
+This is the most important architectural change.
+
+### 1.1 Support every school independently
+
+Introduce a school-aware stat model supporting:
+
+- Fire
+- Ice
+- Storm
+- Myth
+- Life
+- Death
+- Balance
+- Universal / All Schools
+
+Stats that can vary by school should be indexed by school rather than represented as one scalar integer.
+
+At minimum, include school-specific:
+
+- Damage
+- Resistance
+- Accuracy
+- Armor piercing
+- Critical rating
+- Critical block rating
+- Pip conversion, where applicable
+
+Universal bonuses must be correctly applied to each applicable school's effective total.
+
+Example:
+
+If a player has 40 universal damage, 150 Storm damage, and 20 Fire damage, the relevant raw totals should be:
+
+- Storm: 190 damage
+- Fire: 60 damage
+- Other schools: 40 damage
+
+The implementation must distinguish the original universal bonus from school-specific bonuses so this information is not lost during aggregation.
+
+I particularly need off-school damage because current raid strategies frequently require wizards to use damage from schools other than their primary school.
+
+Do not assume a Storm wizard only cares about Storm damage.
+
+### 1.2 Support other character and equipment stats
+
+The architecture should be capable of representing:
+
+- Maximum health
+- Mana
+- Power pip chance
+- Shadow pip rating/chance, keeping units distinct
+- Archmastery rating
+- Pip conversion
+- Incoming and outgoing healing
+- Energy
+- Stun resistance
+- Flat versus percentage modifiers where those distinctions exist
+- Item cards and item-provided spell effects
+- Set bonuses
+- Other game stats that are actually present in imported gear records
+
+Prefer an extensible typed-stat system rather than a long collection of unrelated public integer fields.
+
+Do not invent formulas or automatically interpret ratings as percentages.
+
+Preserve raw item bonuses separately from calculated character totals. Where the game applies curves, rating conversions, soft caps, or hard caps, implement them in a separate, documented calculation layer that can be updated for future patches.
+
+Unknown or unsupported imported stats must be preserved or flagged rather than silently discarded.
+
+### 1.3 Base wizard stats
+
+Introduce a `WizardProfile` or similar concept containing:
+
+- School
+- Level
+- Optional base-stat overrides
+- Optional owned-item inventory
+
+Character base stats must not be represented by one hardcoded function.
+
+Design a data-driven school-and-level base-stat source. If accurate base values are unavailable, make the missing information explicit and permit manual input instead of inventing values.
+
+## Phase 2 — User-Defined Optimization Targets
+
+Replace the hardcoded fitness logic with a configurable target-driven evaluator.
+
+Introduce concepts such as:
+
+- `OptimizationRequest`
+- `StatTarget`
+- `StatConstraint`
+- `FitnessEvaluator`
+- `FitnessBreakdown`
+- `OptimizationResult`
+
+Names can differ if there is a better design.
+
+### 2.1 Target types
+
+Each target should support at least:
+
+**Minimum:** The resulting stat must be at least the specified value.
+
+**Maximum:** The resulting stat must not exceed the specified value.
+
+**Preferred target:** The optimizer should approach a value, with configurable penalties for being above or below it.
+
+**Maximize:** Higher values are always preferred, subject to applicable game mechanics and caps.
+
+**Ignore:** This stat has no influence on optimization.
+
+Also support priorities or weights so players can express which targets matter most.
+
+Example user request:
+
+- Wizard: Death, level 170
+- Storm damage: minimum 150
+- Fire damage: minimum 60
+- Universal resistance: minimum 40
+- Power pip chance: minimum 100%
+- Accuracy: prefer 35% or higher
+- Health: maximize after satisfying the mandatory requirements
+
+The optimization must not reject off-school targets merely because they differ from the player's primary school.
+
+### 2.2 Fitness evaluation
+
+Redesign `Fitness.java` around user-provided constraints.
+
+A suggested approach:
+
+1. Reject illegal equipment configurations.
+2. Calculate aggregate raw stats.
+3. Apply valid derived-stat rules.
+4. Evaluate mandatory constraints.
+5. Penalize deficits using normalized distances.
+6. Rank feasible builds using the player's preferred objectives.
+7. Use secondary metrics to distinguish otherwise similar builds.
+
+Hard constraints should dominate soft preferences. If a feasible build exists, an infeasible build must not win just because it has very high damage in another category.
+
+When no fully feasible build can be found, return the closest candidates and explain their unmet requirements.
+
+Use clear, testable scoring methods. Do not introduce arbitrary weights that cause one stat's units to overwhelm every other stat.
+
+### 2.3 Return multiple solutions
+
+Do not return only one individual.
+
+Return the top K unique gear sets, such as the best 10.
+
+For each result, display:
+
+- Every equipped item
+- Associated jewels, pins, and relevant pet talents
+- Complete school-specific stat totals
+- Which requirements were achieved
+- Which requirements remain unmet
+- Fitness score and component breakdown
+- Differences from other suggested setups
+
+Preserve meaningful diversity. Ten nearly identical results that differ only in an irrelevant item are less useful than several legitimate alternatives.
+
+Do not claim a GA result is a mathematically proven global optimum unless it has been verified by an exact search.
+
+## Phase 3 — Locking, Excluding, and Filtering Equipment
+
+Implement equipment constraints as first-class parts of the search problem.
+
+### 3.1 Locked items
+
+A user should be able to lock an item into a particular equipment slot.
+
+Examples:
+
+- Lock my current robe.
+- Always use a particular deck.
+- Keep my current pet.
+- Lock one specific jewel in a particular socket.
+- Preserve a certain item to activate a set bonus.
+
+Locked choices must never be removed by mutation, crossover, or initialization.
+
+The genetic algorithm should search only the remaining degrees of freedom.
+
+Do not rely on fitness penalties to enforce locks; enforce them structurally through candidate generation and repair.
+
+### 3.2 Excluded items
+
+Allow players to exclude:
+
+- One specific item
+- Multiple specific items
+- Whole categories or item sources
+- Gear above the player's level
+- Gear incompatible with their school
+- Items they do not own, when owned-only mode is enabled
+
+Exclusions must apply consistently throughout the optimizer.
+
+Use stable item IDs internally rather than names alone, since similarly named equipment can exist.
+
+### 3.3 Validate restrictions
+
+Handle invalid combinations gracefully.
+
+Examples:
+
+- An item is both locked and excluded.
+- A locked item cannot be equipped by the selected school.
+- A locked item requires a higher level.
+- A particular slot has no valid candidates.
+- A jewel cannot fit into a selected socket.
+
+Give actionable error messages rather than crashing or allowing invalid combinations.
+
+## Phase 4 — Improve Equipment Modeling
+
+Extend the existing `Gear`, `Jewel`, `Socket`, `Pet`, and `PetTrait` models rather than introducing disconnected systems.
+
+The equipment model should support:
+
+- Unique item identifiers
+- Names and gear slot
+- Level requirements
+- School restrictions
+- School-specific and universal stats
+- Socket configuration and compatibility
+- Pins and applicable equipment restrictions
+- Pet talents and pet jewels
+- Set identifiers and set-bonus thresholds
+- Item-provided spells and bonuses
+- Mount bonuses
+- Data source and version information
+- Optional ownership information
+
+Please eliminate special-case item-name checks where a generic rules system can represent the same behavior.
+
+Pet talent calculations should be correct and should not assume that six interchangeable manifested talents are always possible.
+
+Consider separate representations for actual owned pets versus hypothetical pet configurations. For owned-only searches, pets should be treated as real selectable entities with their known talents rather than arbitrary combinations of talents that the player does not possess.
+
+Use validation so malformed or incomplete imported equipment cannot silently produce incorrect results.
+
+## Phase 5 — Data Import and WizWalker Integration
+
+I want to move away from manually entering every gear item into CSV files.
+
+Investigate whether WizWalker and the tools surrounding it can provide reliable gear item data and help build a local database.
+
+Relevant projects:
+
+- https://github.com/wizwalker/wizwalker
+- https://codeberg.org/wizwalker/wizwalker
+
+The GitHub repository currently points toward Codeberg. Verify the actual current API rather than assuming old examples still work.
+
+### 5.1 Investigate feasibility first
+
+Determine what information can actually be extracted through currently supported capabilities:
+
+- Equipped items
+- Backpack/bank items, if accessible
+- Item IDs
+- Item names
+- Equipment restrictions
+- Individual item stat bonuses
+- Socket information
+- Other useful item metadata
+
+Also investigate whether Wizard101's local game data files can be used to build a broader item catalog.
+
+Pay attention to the distinction between:
+
+1. Reading a character's actual inventory.
+2. Reading the character's current aggregate stats.
+3. Extracting item templates and stat definitions from game files.
+4. Obtaining a comprehensive catalog of every available item.
+
+These are different data-acquisition problems.
+
+Do not assume WizWalker already exposes a complete, documented gear database.
+
+If direct item-stat extraction is unsupported or unreliable, report the limitation and implement a working import interface rather than fabricating functionality.
+
+### 5.2 Design a separate Python bridge
+
+Keep the core genetic algorithm and optimization engine in Java.
+
+Use a separate, optional Python module or script for WizWalker integration.
+
+The Python component should export normalized data in a documented JSON format that Java can import.
+
+The Java application should not need Python or Wizard101 running for normal optimization.
+
+Keep the integration read-only and opt-in. No automated gameplay, account credential collection, memory modification, exploit functionality, or anti-detection functionality is needed.
+
+Prefer offline game-data parsing when feasible, and document any risk or terms-of-service considerations associated with live-client access.
+
+### 5.3 Local item database
+
+Introduce a proper data storage layer, preferably SQLite, with a clean repository abstraction.
+
+Provide support for:
+
+- Loading the legacy CSV records
+- Importing normalized JSON
+- Adding or updating item records
+- Querying by equipment slot, school, level, and stats
+- Deduplicating using stable item IDs
+- Keeping import source, timestamp, and game-version metadata
+- Separating owned items from the global catalog
+- Reimporting data without losing player preferences
+
+Design the database schema so future game updates do not require substantial rewrites.
+
+Do not overwrite trustworthy records with incomplete imported records without validation.
+
+Create a sample importer and fixtures so the full pipeline can be tested without installing Wizard101 or WizWalker.
+
+## Phase 6 — Repair and Improve the Genetic Algorithm
+
+Preserve the existing genetic algorithm where reasonable, but make it suitable for a larger and more complicated equipment database.
+
+Requirements:
+
+- Deterministic runs using a configurable random seed
+- Configurable population size, generations, and mutation rates
+- Elitism
+- Reliable tournament selection
+- Mutation and crossover that respect locks and restrictions
+- Correct handling of socket-compatible jewels
+- Correct handling of limited candidate pools
+- No infinite loops when the candidate pool is small
+- Cached fitness evaluations when appropriate
+- Avoid needless repeated filtering of the entire item database
+- Progress reporting and best-fitness history
+- Reproducible output
+
+Consider candidate prefiltering and dominance pruning to reduce the search space, while ensuring these optimizations do not discard valid solutions for constrained targets or set bonuses.
+
+For small equipment pools, implement an exhaustive-search baseline or equivalent verification mechanism to test that the GA can find known optimal configurations.
+
+Do not add a complicated search framework unless there is an actual demonstrated need.
+
+Keep the optimization engine independent of both the user interface and the data-import method.
+
+## Phase 7 — User Interface / Usable MVP
+
+I ultimately want normal players to be able to use this without editing Java source code.
+
+Implement an initial usable workflow through a CLI and a saved JSON request format. This should run locally with the existing Maven project.
+
+The user should be able to:
+
+1. Select school and level.
+2. Enter desired stat targets.
+3. Specify minimums, preferred values, and optimization priorities.
+4. Select locked items and excluded items.
+5. Choose owned-only or all-known-gear mode.
+6. Run the optimizer.
+7. See several ranked loadouts with complete stat breakdowns.
+8. Save and reload optimization profiles.
+
+Display all seven school-specific damage totals in the output rather than showing only the wizard's primary-school damage.
+
+Keep the input and result APIs independent of the CLI so a graphical interface can be added later.
+
+Document a proposed small desktop UI with equipment-slot selectors, stat target controls, lock/exclude actions, and ranked results. Do not delay the functioning optimizer to build a large UI framework.
+
+## Phase 8 — Testing and Validation
+
+Add JUnit tests and appropriate Maven test configuration.
+
+Test at least:
+
+- Universal damage + school-specific damage aggregation
+- Off-school damage targets
+- Correct handling of all seven schools
+- School and level eligibility
+- Locked gear surviving many generations
+- Excluded items never appearing in results
+- Incompatible jewels and pins being rejected
+- Item set bonuses
+- Pet trait validation
+- Correct handling of missing equipment slots
+- Empty or single-item candidate pools
+- Invalid user constraints
+- Hard constraints dominating soft objectives
+- Fitness improvement toward target stats
+- Legacy CSV compatibility
+- JSON/SQLite import and export
+- Reproducibility with the same random seed
+- Comparison with exhaustive search on a tiny synthetic database
+
+Use deterministic fixtures, and verify the resulting stats numerically.
+
+Do not mark tests as successful unless they have actually been executed.
+
+## Implementation Priorities
+
+Work in manageable increments, but make real code changes, not merely a design document.
+
+**Priority 1 — Deliver a working vertical slice:**
+
+- School-specific stat system
+- Configurable user targets
+- Lock/exclude functionality
+- Repaired GA
+- Existing CSV compatibility
+- Working CLI
+- Tests
+
+**Priority 2 — Deliver the database layer:**
+
+- SQLite storage
+- Normalized import/export
+- Item IDs and metadata
+- Example data fixtures
+
+**Priority 3 — Investigate and prototype WizWalker:**
+
+- Review current project/API
+- Identify verified data access paths
+- Implement a working, read-only importer if practical
+- Otherwise create a clearly documented bridge interface and report what remains unresolved
+
+Do not replace the Java optimizer with Python.
+
+Do not expand this project into a combat simulator.
+
+Do not introduce arbitrary assumptions about game mechanics, item statistics, level scaling, or data extraction without documenting them.
+
+## Documentation and Deliverables
+
+Update the README to include:
+
+- Project architecture
+- Setup and build instructions
+- How to run an optimization
+- How to configure desired stats
+- How to lock and exclude items
+- How to import equipment data
+- Known unsupported mechanics
+- Current WizWalker integration status
+- Roadmap toward a graphical interface and four-person raid optimization
+
+Provide at least one complete example demonstrating that a wizard can specify an off-school damage requirement and receive a valid ranked gear setup.
+
+At the end, report:
+
+- Files added and modified
+- Architectural decisions
+- Bugs fixed
+- Tests run and their results
+- What is functional now
+- What remains incomplete
+- Recommended next development steps
+
+**Begin by auditing the repository, then implement the highest-priority working vertical slice. Do not stop after producing an architectural proposal.**
