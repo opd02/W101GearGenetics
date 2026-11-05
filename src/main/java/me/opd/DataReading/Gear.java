@@ -29,6 +29,9 @@ public class Gear {
         if (pet != null) {
             if (slot != GearSlot.PET) throw new IllegalArgumentException("Pet talents on non-pet " + id);
             pet.validate();
+            if (sockets.stream().filter(s -> s.type == JewelType.PET).count() > 1)
+                throw new IllegalArgumentException("A pet may have at most one pet jewel socket: " + id);
+            pet.getTotalStats(); // Fail early for missing attributes or unsupported modifier profiles.
         }
     }
 }

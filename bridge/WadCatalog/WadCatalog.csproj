@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Imcodec.ObjectProperty"><HintPath>$(ImcodecDir)/Imcodec.ObjectProperty.dll</HintPath></Reference>
+    <Reference Include="Imcodec.IO"><HintPath>$(ImcodecDir)/Imcodec.IO.dll</HintPath></Reference>
+    <Reference Include="Imcodec.Types"><HintPath>$(ImcodecDir)/Imcodec.Types.dll</HintPath></Reference>
+    <Reference Include="Imcodec.Math"><HintPath>$(ImcodecDir)/Imcodec.Math.dll</HintPath></Reference>
+    <Reference Include="Imcodec.Wad"><HintPath>$(ImcodecDir)/Imcodec.Wad.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(ImcodecDir)/Newtonsoft.Json.dll</HintPath></Reference>
+  </ItemGroup>
+  <Target Name="CheckDecoder" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(ImcodecDir)/Imcodec.ObjectProperty.dll')" Text="Set -p:ImcodecDir to a compatible Imcodec binary directory." />
+  </Target>
+</Project>

@@ -1,6 +1,7 @@
 package me.opd.GA;
 import me.opd.Individual;
 import me.opd.Optimization.SearchSpace;
+import me.opd.Optimization.SocketOptimizer;
 import java.util.*;
 public class PopulationInitializer {
     public static List<Individual> initialize(SearchSpace space,Random random) {
@@ -16,6 +17,8 @@ public class PopulationInitializer {
                 }
             }
             space.repairJewels(build,random);
+            // Seed coherent holders + jewels while retaining half the uniform random starts.
+            if (i%2==1) for (var slot : space.slots) SocketOptimizer.improve(build,space,slot);
             population.add(build);
         }
         return population;

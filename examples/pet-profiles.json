@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "bodyTemplateId": "69082",
+    "hypothetical": true,
+    "age": 7,
+    "attributes": {"STRENGTH": 255, "INTELLECT": 250, "AGILITY": 260, "WILL": 260, "POWER": 250},
+    "maximumAttributes": {"STRENGTH": 255, "INTELLECT": 250, "AGILITY": 260, "WILL": 260, "POWER": 250},
+    "fullyTrained": true,
+    "rounding": "RAW"
+  },
+  "pets": [
+    {
+      "id": "plan:pet:death-damage-mighty",
+      "name": "Hypothetical Death damage / Mighty",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-Death02", "Talent-Damage-All02", "Talent-Damage-All01", "Talent-Stat01-Str04"]
+    },
+    {
+      "id": "plan:pet:death-five-damage",
+      "name": "Hypothetical five damage talents",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-Death02", "Talent-Damage-Death01", "Talent-Damage-All02", "Talent-Damage-All01"]
+    },
+    {
+      "id": "plan:pet:dual-damage-mighty",
+      "name": "Hypothetical dual-school damage / Mighty",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-Storm03", "Talent-Damage-All02", "Talent-Damage-All01", "Talent-Stat01-Str04"]
+    },
+    {
+      "id": "plan:pet:dual-damage-pierce",
+      "name": "Hypothetical dual-school damage / pierce",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-Storm03", "Talent-Damage-All02", "Talent-ArmorPiercing-02", "Talent-Stat01-Str04"]
+    },
+    {
+      "id": "plan:pet:death-double-pierce",
+      "name": "Hypothetical Death damage / double pierce",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-All02", "Talent-ArmorPiercing-01", "Talent-ArmorPiercing-02", "Talent-Stat01-Str04"]
+    },
+    {
+      "id": "plan:pet:storm-support",
+      "name": "Hypothetical Storm support / pierce",
+      "talentIds": ["Talent-Damage-Storm03", "Talent-Damage-Storm02", "Talent-Damage-All02", "Talent-ArmorPiercing-02", "Talent-Stat01-Str04"]
+    },
+    {
+      "id": "plan:pet:accuracy-support",
+      "name": "Hypothetical Storm accuracy / Death damage",
+      "talentIds": ["Talent-Damage-Death03", "Talent-Damage-All02", "Talent-Accuracy-Storm03", "Talent-ArmorPiercing-02", "Talent-Stat01-Str04"]
+    }
+  ]
+}

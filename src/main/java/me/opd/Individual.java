@@ -15,7 +15,7 @@ public class Individual {
         StatBlock total = new StatBlock();
         for (var entry : gearSet.entrySet()) {
             Gear gear = entry.getValue(); total.add(gear.baseStats);
-            if (gear.pet != null) total.add(gear.pet.getTotalStats());
+            if (gear.pet != null) total.add(me.opd.PetHandeling.PetCalculator.calculate(gear.pet,jewels.getOrDefault(entry.getKey(),List.of())));
             for (Jewel jewel : jewels.getOrDefault(entry.getKey(),List.of()))
                 if (jewel != null) total.add(jewel.statBonus);
         }

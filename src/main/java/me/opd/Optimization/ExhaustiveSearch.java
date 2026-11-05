@@ -15,7 +15,7 @@ public class ExhaustiveSearch {
     private static void visitSlot(SearchSpace space,FitnessEvaluator evaluator,Individual build,int index,Map<String,Integer> used) {
         if (index==space.slots.size()) { evaluator.evaluate(build); return; }
         GearSlot slot=space.slots.get(index);
-        for (Gear item : space.gear.get(slot)) {
+        for (Gear item : space.enumerationChoices(slot)) {
             build.gearSet.put(slot,item);
             build.jewels.put(slot,new ArrayList<>());
             visitSocket(space,evaluator,build,index,0,used);

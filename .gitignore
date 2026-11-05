@@ -40,3 +40,4 @@ build/
 *.sqlite
 *.sqlite-journal
 __pycache__/
+bridge/WadCatalog/obj/

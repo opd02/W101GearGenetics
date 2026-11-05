@@ -1,0 +1,60 @@
+{
+  "wizard": {
+    "school": "STORM",
+    "level": 180,
+    "scaledLevel": 170,
+    "baseOverrides": {
+      "values": {
+        "POWER_PIP_CHANCE:UNIVERSAL": 40
+      }
+    },
+    "ownedOnly": false
+  },
+  "requiredSlots": ["HAT", "ROBE", "BOOTS", "WAND", "ATHAME", "AMULET", "RING", "DECK", "PET"],
+  "allowIncompleteItems": true,
+  "excludedCategories": ["qa-or-test"],
+  "lockedGear": {},
+  "excludedGear": ["Arcane Smoothie","Sacred Yarn Staff","Gorgonsbane Xiphos"],
+  "petSearch": {
+    "mode": "AUTO",
+    "template": "Hypothetical Death damage / Mighty",
+    "talentPool": [
+      "Death-Dealer", "Death-Giver", "Death-Boon",
+      "Storm-Dealer", "Storm-Giver", "Storm-Boon",
+      "Pain-Giver", "Pain-Bringer", "Armor Breaker", "Armor Piercer",
+      "Spell-Proof", "Spell-Defying", "Death-Sniper", "Storm-Sniper", "Sharp-Shot",
+      "Mighty", "Thinkin' Cap", "Powerful", "Health Bounty", "Pip o'Plenty"
+    ],
+    "lockedTalents": []
+  },
+  "targets": [
+    {"stat": "DAMAGE", "school": "DEATH", "mode": "MINIMUM", "value": 340, "mandatory": true, "scale": 340},
+    {"stat": "DAMAGE", "school": "STORM", "mode": "MINIMUM", "value": 107, "mandatory": true, "scale": 107},
+    {"stat": "PIERCE", "school": "DEATH", "mode": "MINIMUM", "value": 54, "mandatory": true, "scale": 54},
+    {"stat": "PIERCE", "school": "STORM", "mode": "MINIMUM", "value": 36, "mandatory": true, "scale": 36},
+    {"stat": "ACCURACY", "school": "STORM", "mode": "MINIMUM", "value": 30, "mandatory": true, "scale": 30},
+    {"stat": "ACCURACY", "school": "DEATH", "mode": "MINIMUM", "value": 15, "mandatory": true, "scale": 15},
+    {"stat": "POWER_PIP_CHANCE", "school": "UNIVERSAL", "mode": "MINIMUM", "value": 100, "mandatory": true, "scale": 100},
+    {"stat": "HEALTH", "school": "UNIVERSAL", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 1000},
+    {"stat": "RESISTANCE", "school": "DEATH", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "RESISTANCE", "school": "STORM", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "ACCURACY", "school": "DEATH", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "ACCURACY", "school": "STORM", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "DAMAGE", "school": "DEATH", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "DAMAGE", "school": "STORM", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "PIERCE", "school": "DEATH", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "PIERCE", "school": "STORM", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100}
+  ],
+  "search": {
+    "seed": 7,
+    "populationSize": 500,
+    "generations": 280,
+    "mutationRate": 0.5,
+    "crossoverRate": 0.7,
+    "tournamentSize": 7,
+    "elites": 3,
+    "method": "GA"
+  },
+  "topK": 5,
+  "minDifferentSlots": 1
+}

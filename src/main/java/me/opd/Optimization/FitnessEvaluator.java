@@ -11,7 +11,7 @@ public class FitnessEvaluator {
         space.validate(build);
         return cache.computeIfAbsent(build.signature(),key -> {
             var totals=calculator.calculate(build,space.catalog,space.base);
-            return new Scored(build.copyGenome(),totals,Fitness.evaluate(totals.character(),space.request.targets));
+            return new Scored(build.copyGenome(),totals,Fitness.evaluate(totals.character(),space.request.targets,space.scaling));
         });
     }
     public Collection<Scored> evaluated() { return cache.values(); }

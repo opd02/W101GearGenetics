@@ -1,5 +1,7 @@
 # Building a versioned Wizard101 item catalog
 
+**Implementation update, 2026-10-31:** the offline retail extraction and SQLite staging pipeline now exists. It captured 80,162 item templates and exported 60,646 provisional gear records plus 4,416 jewels/pins. No records are independently verified complete yet. See [the implemented workflow and coverage](WAD_CATALOG.md). The research below describes the earlier feasibility work.
+
 Research date: 2026-10-30. Source inspection only: no game process was accessed, no game files decoded, no tools built/installed and no live compatibility claimed.
 
 Inspected revisions:

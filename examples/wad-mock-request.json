@@ -1,0 +1,38 @@
+{
+  "wizard": {
+    "school": "DEATH",
+    "level": 170,
+    "baseOverrides": {
+      "values": {
+        "HEALTH:UNIVERSAL": 4000,
+        "POWER_PIP_CHANCE:UNIVERSAL": 40
+      }
+    },
+    "ownedOnly": false
+  },
+  "requiredSlots": ["HAT", "ROBE", "BOOTS", "WAND", "ATHAME", "AMULET", "RING", "DECK"],
+  "allowIncompleteItems": true,
+  "excludedCategories": ["qa-or-test"],
+  "targets": [
+    {"stat": "DAMAGE", "school": "DEATH", "mode": "MINIMUM", "value": 200, "mandatory": true, "scale": 200},
+    {"stat": "RESISTANCE", "school": "UNIVERSAL", "mode": "MINIMUM", "value": 35, "mandatory": true, "scale": 35},
+    {"stat": "ACCURACY", "school": "DEATH", "mode": "MINIMUM", "value": 20, "mandatory": true, "scale": 20},
+    {"stat": "POWER_PIP_CHANCE", "school": "UNIVERSAL", "mode": "MINIMUM", "value": 100, "mandatory": true, "scale": 100},
+    {"stat": "HEALTH", "school": "UNIVERSAL", "mode": "MINIMUM", "value": 8000, "mandatory": true, "scale": 8000},
+    {"stat": "PIERCE", "school": "DEATH", "mode": "PREFERRED", "value": 30, "abovePenalty": 0, "scale": 30},
+    {"stat": "DAMAGE", "school": "DEATH", "mode": "MAXIMIZE", "weight": 2, "scale": 100},
+    {"stat": "HEALTH", "school": "UNIVERSAL", "mode": "MAXIMIZE", "weight": 0.2, "scale": 1000}
+  ],
+  "search": {
+    "seed": 7,
+    "populationSize": 120,
+    "generations": 100,
+    "mutationRate": 0.5,
+    "crossoverRate": 0.7,
+    "tournamentSize": 7,
+    "elites": 3,
+    "method": "GA"
+  },
+  "topK": 5,
+  "minDifferentSlots": 1
+}

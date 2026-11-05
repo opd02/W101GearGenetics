@@ -2,6 +2,7 @@ package me.opd.Storage;
 import me.opd.DataReading.*;
 import me.opd.JewelHandeling.Jewel;
 import me.opd.Optimization.*;
+import me.opd.PetHandeling.PetTrait;
 import java.nio.file.*;
 import java.sql.*;
 import java.util.*;
@@ -23,6 +24,7 @@ public class SqliteItemRepository implements ItemRepository {
                 s.execute("CREATE TABLE IF NOT EXISTS set_rules(id TEXT NOT NULL,pieces INTEGER NOT NULL,payload TEXT NOT NULL,PRIMARY KEY(id,pieces))");
                 s.execute("CREATE TABLE IF NOT EXISTS base_stats(key TEXT PRIMARY KEY,payload TEXT NOT NULL)");
                 s.execute("CREATE TABLE IF NOT EXISTS catalog_extensions(key TEXT PRIMARY KEY,payload TEXT NOT NULL)");
+                s.execute("CREATE TABLE IF NOT EXISTS pet_talents(key TEXT PRIMARY KEY,payload TEXT NOT NULL)");
                 s.execute("CREATE TABLE IF NOT EXISTS profiles(name TEXT PRIMARY KEY,payload TEXT NOT NULL)");
                 s.execute("CREATE TABLE IF NOT EXISTS ownership(profile TEXT NOT NULL,item_id TEXT NOT NULL,quantity INTEGER NOT NULL CHECK(quantity>=0),PRIMARY KEY(profile,item_id))");
             }
@@ -44,6 +46,7 @@ public class SqliteItemRepository implements ItemRepository {
                 }
                 for (var entry : incoming.baseStats.entrySet()) putPayload("base_stats",entry.getKey(),JsonIO.encode(entry.getValue()));
                 for (var entry : incoming.extensions.entrySet()) putPayload("catalog_extensions",entry.getKey(),JsonIO.encode(entry.getValue()));
+                for (PetTrait talent : incoming.petTalents) putPayload("pet_talents",talent.id,JsonIO.encode(talent));
                 snapshot().validate();
                 connection.commit();
             } catch (RuntimeException | SQLException e) { connection.rollback(); throw e; }
@@ -92,6 +95,7 @@ public class SqliteItemRepository implements ItemRepository {
             try (ResultSet rs=s.executeQuery("SELECT payload FROM set_rules ORDER BY id,pieces")) { while (rs.next()) catalog.setBonuses.add(JsonIO.decode(rs.getString(1),SetBonus.class)); }
             try (ResultSet rs=s.executeQuery("SELECT key,payload FROM base_stats ORDER BY key")) { while (rs.next()) catalog.baseStats.put(rs.getString(1),JsonIO.decode(rs.getString(2),StatBlock.class)); }
             try (ResultSet rs=s.executeQuery("SELECT key,payload FROM catalog_extensions ORDER BY key")) { while (rs.next()) catalog.extensions.put(rs.getString(1),JsonIO.decode(rs.getString(2),Object.class)); }
+            try (ResultSet rs=s.executeQuery("SELECT payload FROM pet_talents ORDER BY key")) { while (rs.next()) catalog.petTalents.add(JsonIO.decode(rs.getString(1),PetTrait.class)); }
             return catalog;
         } catch (SQLException e) { throw failure(e); }
     }
