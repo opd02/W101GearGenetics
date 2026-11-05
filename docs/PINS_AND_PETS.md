@@ -19,7 +19,7 @@ Generated outputs under ignored `target/`:
 - `wizard101/pet-catalog.json`: normalized explicit pets, supported standalone `petTalents` and star jewels.
 - `wizard101/pet-catalog.report.json`: supported/excluded talent and jewel counts/reasons.
 - `wizard101/pet-catalog.talents.json`: raw talent definitions, normalized supported definitions and exclusions.
-- `wizard101/death-storm-expanded-catalog.json`: filtered gear, ordinary jewels, pins and explicit pets.
+- `wizard101/catalog.json`: request-specific gear, ordinary jewels, pins and explicit pets. The expanded launcher's default `-GearPool BROAD` retains unresolved gear such as Howling Werewolf's Collar; `-GearPool FILTERED` restores the earlier gear mapping filter. Unresolved effects remain unmodeled, with issues and incomplete status preserved. Jewel/pin filters are unchanged.
 - `wizard101/death-storm-expanded-results.json`: ranked builds, socket positions, talents, totals and target deficits.
 
 These generated outputs are replaced by subsequent runs. Original source databases, the earlier eight-slot results and original captures are preserved. Supply `-Output` to save optimization results separately. Other launcher options include `-PetProfiles`, `-ResourceCapture`, `-StagingDatabase`, `-Database` and `-Request`.

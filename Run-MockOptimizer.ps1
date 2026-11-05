@@ -5,7 +5,9 @@ param(
     [string]$JavaPath = '',
     [switch]$IncludePins,
     [string]$PetCatalog = '',
-    [string]$CatalogOutput = 'target/wizard101/mock-catalog.json'
+    [string]$CatalogOutput = 'target/wizard101/mock-catalog.json',
+    [ValidateSet('FILTERED', 'BROAD')]
+    [string]$GearPool = 'FILTERED'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,10 +37,12 @@ try {
     }
     Write-Host "Request: $Request"
     Write-Host "Source database: $Database"
+    Write-Host "Gear pool: $GearPool"
     Write-Host 'Manual base overrides; provisional WAD records enabled. Check the request and result warnings.'
     $mockCatalog = $CatalogOutput
     $prepareArgs = @('bridge/prepare_mock_catalog.py', '--db', $Database, '--request', $Request, '--output', $mockCatalog)
     if ($IncludePins) { $prepareArgs += '--include-pins' }
+    if ($GearPool -eq 'BROAD') { $prepareArgs += '--include-unresolved-gear' }
     if ($PetCatalog) { $prepareArgs += @('--pet-catalog', $PetCatalog) }
     & python @prepareArgs
     if ($LASTEXITCODE -ne 0) { throw 'Could not prepare the extracted mock catalog.' }

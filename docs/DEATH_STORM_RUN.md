@@ -12,11 +12,19 @@
 | Death accuracy | 15 |
 | Power-pip chance | 100 |
 
-No equipment, pet, or mount is locked. Owned-only mode is off. Mandatory deficits are normalized by their respective target values with equal weights. The current soft objective combines health with extra Death/Storm resistance, accuracy, damage and pierce. Earlier runs below used fewer soft objectives.
+Howling Werewolf's Collar is locked in AMULET; other equipment and pet talents are unlocked. Owned-only mode is off. Mandatory deficits are normalized by their respective target values with equal weights. The current soft objective combines health with extra Death/Storm resistance, accuracy, damage and pierce. Earlier runs below used fewer soft objectives and did not lock the collar.
+
+## Broad pool with required collar (2026-11-05)
+
+The expanded launcher now defaults to `-GearPool BROAD`, preparing `target/wizard101/catalog.json` from `target/wizard101/optimizer.sqlite`. The pool contains 30,552 gear records and 2,359 jewels/pins/star jewels. Gear with unresolved mappings is retained, including the level-100 Howling Werewolf's Collar (`w101:template:1338316`); its Death Mastery effect remains unmodeled, while its decoded 4 Death damage, 2 Death accuracy and two square sockets are available. Existing school/current-level/slot/test-item and jewel filters remain. Issues and incomplete status are preserved. `-GearPool FILTERED` restores the earlier gear mapping filter and excludes the collar.
+
+The full unchanged seed-7, population-500, 280-generation request completed in 67.8 seconds with 59,340 unique evaluations. All five returned alternatives use the required collar and meet all seven mandatory post-scaling targets. The first has Death/Storm damage 340.226415/189.66, pierce 55.066667/57.033333, accuracy 18.35/30.35, power-pip chance 101, modeled health 7,408.844960 and objective 15.179806080974396. A result check verified the collar ID and every mandatory target against the unchanged request in all five alternatives; this is software/search validation, not retail formula validation.
+
+Results: `target/wizard101/howling-werewolf-collar-results.json`; launcher log: `target/wizard101/howling-werewolf-collar-run.log`. The prior normal result was preserved. All 25 Python tests passed, including broad/filtered pool coverage and preservation of eligibility/test/jewel filters. Both PowerShell scripts passed syntax checks. No Java source changed or JAR rebuild was needed.
 
 ## Current search coverage
 
-The current request searches eight equipment slots plus a pet, with ordinary jewels, eligible pins and supported star jewels. It now uses AUTO mode to find five manifested talents from 20 named choices. Seven explicit hypothetical profiles remain available by switching `petSearch.mode` to PREDEFINED. Named manifested-talent locks work in both modes; see [automatic pet search and mode switching](AUTO_PETS.md). Mounts and unresolved sets remain excluded. The source data and hypothetical pet attributes are provisional. See [pin/pet rules and setup](PINS_AND_PETS.md).
+The current request searches eight equipment slots plus a pet, with ordinary jewels, eligible pins and supported star jewels. It now uses AUTO mode to find five manifested talents from 20 named choices. Seven explicit hypothetical profiles remain available by switching `petSearch.mode` to PREDEFINED. Named manifested-talent locks work in both modes; see [automatic pet search and mode switching](AUTO_PETS.md). Mounts remain excluded and extracted set bonuses remain unresolved. The source data and hypothetical pet attributes are provisional. See [pin/pet rules and setup](PINS_AND_PETS.md).
 
 The 2026-11-05 AUTO trial at population 500 / 280 generations returned five feasible alternatives in 67.5 seconds, versus 65.0 seconds for PREDEFINED. The best AUTO pet manifests Sharp-Shot, Pain-Giver, Death-Dealer, Health Bounty and Spell-Proof with an Armor Breaker Opal; the full objective is 15.38909809159373 and modeled post-scaling health is 7,474.419908. Inputs, full results and independent audit are saved under `target/auto-pets-20261105/`. See [measurement details](AUTO_PETS.md#validation-and-measured-example). Earlier runs below use predefined pets and earlier search settings.
 

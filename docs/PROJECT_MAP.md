@@ -33,7 +33,7 @@ Paths below are relative to the repository root unless linked.
 | Offline archive decoder | `bridge/WadCatalog/Program.cs` | C# adapter using external Imcodec DLLs; manifest/template/resource capture with provenance |
 | Catalog projection | `bridge/build_wad_catalog.py` | Stage raw captures, project stats/restrictions/sockets, retain mapping issues, export normalized catalog |
 | Pet projection | `bridge/build_pet_catalog.py` | Resolve supported talent resources and star jewels; build explicit pet profiles; check capture revision consistency |
-| Run pool preparation | `bridge/prepare_mock_catalog.py` | Filter provisional database by request; exclude known problem records; optionally merge pins/pets |
+| Run pool preparation | `bridge/prepare_mock_catalog.py` | Filter provisional database by request; BROAD retains unresolved gear, FILTERED omits it; optionally merge pins/pets |
 | Other adapters | `bridge/normalize.py`, `bridge/wad_manifest.py` | Generic input normalization and the earlier optional WizWalker manifest prototype |
 
 Paths abbreviated after a directory in the table refer to sibling files within that area. Existing package spellings `JewelHandeling` and `PetHandeling` are intentional references to the current tree.
@@ -86,6 +86,10 @@ Launch with `powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-DeathStor
 
 CLI exit 0 means the search completed; it can still have unmet mandatory targets. Inspect solution feasibility. Errors return 2. GA results do not establish global optimality or prove infeasibility.
 
+The expanded launcher now defaults to `-GearPool BROAD` and prepares `target/wizard101/catalog.json` from the source `optimizer.sqlite`. It retains provisional gear with unresolved mappings, including the current AMULET lock, Howling Werewolf's Collar (`unsupported-stat-table:Mastery_Death`). School/current-level/slot and recognizable test filters remain; jewels/pins retain their existing mapping filters. Unknown effects/requirements/sets are not resolved or scored by broadening the pool. Use `-GearPool FILTERED` for the earlier behavior; the standalone mock launcher keeps that default. Historical results below used the earlier pool without the collar lock.
+
+The broad-pool collar run returned five feasible alternatives, all using the locked amulet; all seven mandatory targets were checked. All 25 Python tests passed and both launchers passed syntax checks. Results and details are in [DEATH_STORM_RUN.md](DEATH_STORM_RUN.md#broad-pool-with-required-collar-2026-11-05).
+
 Validation observed during the 2026-11-04 review:
 
 - Latest Python run: all 21 tests passed, including scaling-table units/validation and character-level pool eligibility.
@@ -99,13 +103,13 @@ Automatic pet planning on 2026-11-05: all 61 Java and 22 Python tests passed. Th
 
 ## Current Death/Storm example
 
-[death-storm-request.json](../examples/death-storm-request.json) configures a STORM-primary wizard at `level: 180`, `scaledLevel: 170` and requires post-scaling Death damage 340, Storm damage 107, Death/Storm pierce 54/36, Storm/Death accuracy 30/15, and power-pip chance 100. Its post-scaling soft objective combines `HEALTH:UNIVERSAL MAXIMIZE` (weight 1, scale 1000) with eight `MAXIMIZE` preferences for Death and Storm resistance, accuracy, damage and pierce (each weight 1, scale 100). Mandatory requirements rank first, then the combined soft score. No excess penalties or user upper requirements were added; scaling applies caps. Power-pip chance remains minimum-only. It selects eight equipment slots plus PET, with no locked gear, owned-only restriction or mount. Base power-pip chance is still mocked as 40; natural base health is omitted and should be supplied at character level 180 for accurate health saturation/tradeoffs.
+[death-storm-request.json](../examples/death-storm-request.json) configures a STORM-primary wizard at `level: 180`, `scaledLevel: 170` and requires post-scaling Death damage 340, Storm damage 107, Death/Storm pierce 54/36, Storm/Death accuracy 30/15, and power-pip chance 100. Its post-scaling soft objective combines `HEALTH:UNIVERSAL MAXIMIZE` (weight 1, scale 1000) with eight `MAXIMIZE` preferences for Death and Storm resistance, accuracy, damage and pierce (each weight 1, scale 100). Mandatory requirements rank first, then the combined soft score. No excess penalties or user upper requirements were added; scaling applies caps. Power-pip chance remains minimum-only. It selects eight equipment slots plus PET, locks Howling Werewolf's Collar in AMULET, and has no owned-only restriction or mount. Base power-pip chance is still mocked as 40; natural base health is omitted and should be supplied at character level 180 for accurate health saturation/tradeoffs.
 
 The previous unscaled level-170 combined-objective result had 7,634 modeled health and score 15.3626. It is preserved as `target/wizard101/storm-primary-unscaled-170-combined-results.json`, with its matching archived catalog. Standard launcher outputs now use level-180 eligibility with level-170 post-scaling scoring. Full results are in [DEATH_STORM_RUN.md](DEATH_STORM_RUN.md).
 
 The latest 180 -> 170 run returned five candidates meeting all seven mandatory requirements after scaling. The first uses five level-180 items and has post-scaling Death/Storm damage 341.838275/163.128409, pierce 56.56625 each, accuracy 21/45, power-pip chance 100 and modeled health 7,373.434489. The 21,966-record gear pool includes 155 level-180 entries. An independent audit verified all 16 unchanged targets, projections and objective against the original decoded cap rows. Raw and post-scaling totals are both available in the result JSON.
 
-The request currently has empty `lockedGear` and excludes `Arcane Smoothie`, `Sacred Yarn Staff` and `Gorgonsbane Xiphos` by name. Locks accept strings or `{name,level}` objects keyed by slot; exclusions accept strings or `{name,level,slot}` and remove all matching versions. Matching ignores case, whitespace and apostrophe style; ambiguous/unknown locks are errors. Existing ID rules remain compatible. The `find` command searches partial names in a catalog or SQLite database. See [GEAR_SELECTION.md](GEAR_SELECTION.md).
+The request currently locks Howling Werewolf's Collar in AMULET and excludes `Arcane Smoothie`, `Sacred Yarn Staff` and `Gorgonsbane Xiphos` by name. Locks accept strings or `{name,level}` objects keyed by slot; exclusions accept strings or `{name,level,slot}` and remove all matching versions. Matching ignores case, whitespace and apostrophe style; ambiguous/unknown locks are errors. Existing ID rules remain compatible. The `find` command searches partial names in a catalog or SQLite database. See [GEAR_SELECTION.md](GEAR_SELECTION.md).
 
 The packaged name-selection demonstration locked the level-180 Headmistress' Dynamic Cap and excluded all 18 Arcane Smoothie versions, returning three feasible post-scaling candidates over 60 generations. Artifacts are at `target/named-gear-demo-*`, separate from the main trial. Saved requests retained names instead of compiled IDs.
 

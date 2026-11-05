@@ -1,4 +1,4 @@
-"""Select a small, explicit demo pool from the extracted optimizer database."""
+"""Prepare request-specific filtered or broad gear pools from the extracted database."""
 import argparse
 from contextlib import closing
 import json
@@ -9,11 +9,13 @@ import sqlite3
 TEST_MARKERS = re.compile(r'(?:^|[/_\s-])(?:qa|test|debug|polymorph|transformation|stats|godmode|developer)(?:$|[/_\s-])', re.IGNORECASE)
 
 
-def prepare(database, request, pet_catalog=None, include_pins=False):
+def prepare(database, request, pet_catalog=None, include_pins=False, include_unresolved_gear=False):
     school, level = request['wizard']['school'], request['wizard']['level']
     slots = set(request['requiredSlots'])
     catalog = {'schemaVersion': 1, 'gear': [], 'jewels': [], 'setBonuses': [], 'baseStats': {},
-               'extensions': {'demoPool': 'All levels through the requested level; known mappings and no recognizable test/polymorph markers',
+               'extensions': {'demoPool': 'All levels through the requested level; no recognizable test/polymorph markers',
+                              'gearPool': 'BROAD' if include_unresolved_gear else 'FILTERED',
+                              'includeUnresolvedGear': include_unresolved_gear,
                               'sourceDatabase': str(database), 'includePins': include_pins,
                               'characterLevel': level, 'scaledLevel': request['wizard'].get('scaledLevel'),
                               'validation': 'Provisional archive data; not a full-catalog search'}}
@@ -30,7 +32,7 @@ def prepare(database, request, pet_catalog=None, include_pins=False):
             if kind == 'gear':
                 if item['slot'] not in slots or item['slot'] == 'PET':
                     continue
-                if any(issue != 'unsupported-effect:StartingPipEffectInfo' for issue in issues):
+                if not include_unresolved_gear and any(issue != 'unsupported-effect:StartingPipEffectInfo' for issue in issues):
                     continue
                 catalog['gear'].append(item)
             elif kind == 'jewel':
@@ -76,15 +78,20 @@ def main():
     parser.add_argument('--request', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--include-pins', action='store_true')
+    parser.add_argument('--include-unresolved-gear', action='store_true',
+                        help='Retain provisional gear with unresolved mappings; unknown effects are not scored. Jewel filters remain unchanged.')
     parser.add_argument('--pet-catalog', type=Path)
     args = parser.parse_args()
     request = json.loads(args.request.read_text(encoding='utf-8'))
     pets = json.loads(args.pet_catalog.read_text(encoding='utf-8')) if args.pet_catalog else None
-    catalog = prepare(args.db, request, pets, args.include_pins)
+    catalog = prepare(args.db, request, pets, args.include_pins, args.include_unresolved_gear)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(catalog, ensure_ascii=False) + '\n', encoding='utf-8')
     print('Mock pool: {} gear and {} jewels, levels 1-{}. No lower-level cutoff; all records provisional.'.format(
         len(catalog['gear']), len(catalog['jewels']), request['wizard']['level']))
+    if args.include_unresolved_gear:
+        unresolved = sum(bool(g.get('extensions', {}).get('issues')) for g in catalog['gear'])
+        print('BROAD gear pool: {} records retain unresolved issues. Only decoded numeric bonuses are scored; unknown effects, requirements and set bonuses remain unverified.'.format(unresolved))
     if request['wizard'].get('scaledLevel') is not None:
         print('Character level {} selects gear; targets will be evaluated after scaling to level {}.'.format(
             request['wizard']['level'], request['wizard']['scaledLevel']))

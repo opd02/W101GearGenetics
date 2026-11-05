@@ -13,7 +13,9 @@
   "requiredSlots": ["HAT", "ROBE", "BOOTS", "WAND", "ATHAME", "AMULET", "RING", "DECK", "PET"],
   "allowIncompleteItems": true,
   "excludedCategories": ["qa-or-test"],
-  "lockedGear": {},
+  "lockedGear": {
+    "AMULET": {"name": "Howling Werewolf's Collar"}
+  },
   "excludedGear": ["Arcane Smoothie","Sacred Yarn Staff","Gorgonsbane Xiphos"],
   "petSearch": {
     "mode": "AUTO",
@@ -47,8 +49,8 @@
   ],
   "search": {
     "seed": 7,
-    "populationSize": 500,
-    "generations": 280,
+    "populationSize": 750,
+    "generations": 700,
     "mutationRate": 0.5,
     "crossoverRate": 0.7,
     "tournamentSize": 7,

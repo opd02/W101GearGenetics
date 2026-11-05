@@ -5,7 +5,9 @@ param(
     [string]$StagingDatabase = 'target/wizard101/staging.sqlite',
     [string]$Database = 'target/wizard101/optimizer.sqlite',
     [string]$Output = 'target/wizard101/death-storm-expanded-results.json',
-    [string]$JavaPath = ''
+    [string]$JavaPath = '',
+    [ValidateSet('FILTERED', 'BROAD')]
+    [string]$GearPool = 'BROAD'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,7 +31,7 @@ try {
     }
     & (Join-Path $PSScriptRoot 'Run-MockOptimizer.ps1') -Request $Request -Database $Database `
         -Output $Output -JavaPath $JavaPath -IncludePins -PetCatalog $petCatalog `
-        -CatalogOutput 'target/wizard101/death-storm-expanded-catalog.json'
+        -CatalogOutput 'target/wizard101/catalog.json' -GearPool $GearPool
 } finally {
     Pop-Location
 }
