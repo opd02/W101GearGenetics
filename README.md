@@ -1,6 +1,6 @@
 # W101GearGenetics
 
-A local Java gear optimizer supporting all seven schools independently, off-school targets, mandatory requirements, health/stat preferences, named gear locks/exclusions, sockets/pins, predefined or automatic pets with talent locks, optional level scaling, owned inventory, seeded genetic search and ranked alternatives. The existing Maven project and equipment classes have been evolved in place.
+A local Java gear optimizer supporting all seven schools independently, off-school targets, mandatory requirements, health/stat preferences, named gear locks/exclusions, sockets/pins, predefined or automatic pets with talent locks, optional level scaling with explicit scenario ceilings, owned inventory, seeded genetic search and ranked alternatives. The existing Maven project and equipment classes have been evolved in place.
 
 For a new development session, start with [AGENTS.md](AGENTS.md) and the [project map](docs/PROJECT_MAP.md). The map identifies the current architecture and feature documents; current source and request files take precedence over historical reports. Use [Create a new target gearset](#create-a-new-target-gearset) for new request files and [Feature development and verification](#feature-development-and-verification) for implementation work.
 
@@ -25,15 +25,29 @@ Create a saved JSON request interactively:
 java -jar target/GearGenetics-1.0-SNAPSHOT.jar init --output my-request.json
 ```
 
+## Expanded request presets
+
+All three expanded presets use current level **180**, scaled combat level **170**, eight equipment slots plus PET, and AUTO pets with 20 school-appropriate talents. Each requires 100 power-pip chance. They use modeled 40 base power-pip chance and omit natural base health; provide verified current-level base stats before interpreting health as a full character total. MOUNT is omitted and owned-only mode is off.
+
+| Request | Primary wizard school | AMULET lock | Population / generations |
+| --- | --- | --- | --- |
+| [Death/Storm](examples/death-storm-request.json) | STORM | Howling Werewolf's Collar | 750 / 700 |
+| [Fire/Balance](examples/fire-balance-request.json) | FIRE | Lovelorn Spirit's Amulet | 750 / 250 |
+| [Death/Ice](examples/death-ice-request.json) | DEATH | Collar of the Betrayed | 750 / 250 |
+
+Use the same expanded launcher with each request and a separate `-Output`; its filename does not restrict it to Death/Storm. [Gear-pool selection](#gear-pools-and-player-item-screening) and all three current mastery-amulet locks require attention when switching modes. Current JSON is authoritative; historical results can use earlier locks, targets or search settings.
+
 ## Create a new target gearset
 
-Each target gearset is a reusable request JSON file. Create a new file rather than changing an existing preset you want to keep. For a WAD-backed build with pins and pets, start from the current expanded example:
+Each target gearset is a reusable request JSON file. Create a new file rather than changing an existing preset you want to keep. For a WAD-backed build with pins and pets, copy the closest expanded preset; for example:
 
 ```powershell
 Copy-Item -LiteralPath examples/death-storm-request.json -Destination examples/my-raid-request.json
 ```
 
 Choose a descriptive filename for the actual build. The [off-school synthetic example](examples/offschool-request.json) and [eight-slot WAD mock](examples/wad-mock-request.json) are other starting points, with different assumptions and included slots.
+
+See [Death/Ice](#death--ice-targets-with-supplied-damage-ceilings) for a preset with damage minimums below explicit supplied ceilings and stronger damage preferences.
 
 Edit the new file, reviewing these fields together:
 
@@ -42,6 +56,7 @@ Edit the new file, reviewing these fields together:
 | `wizard.school` | The wizard's primary school, which controls gear and pin eligibility; bonus targets can belong to other schools. |
 | `wizard.level` | Current character level for equipment eligibility and base stats. |
 | `wizard.scaledLevel` | Optional combat level; omit it for raw stats. When present, enter the desired **post-scaling** target values. |
+| `wizard.scaledCapOverrides` | Optional supplied post-scaling ceilings, retaining bundled ratios. Review copied overrides for this wizard/level; omit them unless those modeling inputs are intended. These are separate from minimum targets and base stats. |
 | `wizard.baseOverrides` | Verified current-level base stats, or explicit modeled values. The Death/Storm example supplies only mocked 40 base power-pip chance and no natural base health. |
 | `requiredSlots` | The slots to search. The expanded example includes eight equipment slots and PET, without MOUNT. |
 | `targets` | Replace the copied array with the desired hard requirements and soft preferences. See the example below. |
@@ -111,6 +126,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-MockOptimizer.ps1 -Req
 
 See [mock run details](docs/MOCK_RUN.md) for candidate filters and modeling limits.
 
+## Gear pools and player-item screening
+
+The expanded launcher defaults to `-GearPool BROAD`; the standalone mock launcher defaults to `FILTERED`. Both read the source SQLite database, prepare a request-specific catalog and run the Java engine. In the expanded workflow, that catalog is `target/wizard101/catalog.json`.
+
+| Pool | Gear mapping rule | Current mastery-amulet locks |
+| --- | --- | --- |
+| `BROAD` | Retains unresolved gear with its issues and incomplete status. Only decoded numeric bonuses are scored. | Retains the three named amulets; their mastery effects remain unmodeled. |
+| `FILTERED` | Drops gear with mapping issues other than the permitted starting-pip effect. | Removes these amulets because their mastery stat tables are unsupported; their locks then fail. |
+
+`FILTERED` describes mapping coverage, not verified obtainability. A legitimate item such as Lovelorn Spirit's Amulet can be removed because Balance Mastery is unmodeled. Jewel/pin mapping filters are unchanged by the BROAD gear option. `-Database` changes the source SQLite path; renaming generated JSON does not broaden the pool.
+
+Both modes also pass through the Java engine's [player-item filter](docs/PLAYER_ITEM_FILTER.md). It rejects archive records with identified internal/dev/monster/stat-holder markers (including camel-case `BiblioTransform` and `StatHat`), unresolved display names or unresolved equipment eligibility, even with `allowIncompleteItems: true`. This also protects direct Java/SQLite runs and older catalogs. Rejection counts/reasons and examples appear in result warnings. Records rejected by Java remain in the supplied catalog for name resolution and provenance, so prepared counts and `find` listings can include gear that cannot enter search domains.
+
+Passing these checks does not verify retail availability, unknown effects or gameplay formulas. Earlier broad results included internal stat-holder gear; use the [screened Death/Storm run](docs/DEATH_STORM_RUN.md#screened-broad-pool-rerun-2026-11-05) when reviewing that trial. Saved results are not repaired by changing a pool setting or rebuilding the JAR. Run the selected request again and check `feasible`, target deficits and the input revision. An error before result writing leaves any previous result file in place.
+
 ## Death / Storm targets with pins and pets
 
 The **level-180 Storm-primary wizard using Death pins, scaled to level 170** request includes 340 Death damage, 107 Storm damage, 54/36 Death/Storm pierce, 30/15 Storm/Death accuracy and 100 power-pip chance as mandatory **post-scaling** minimums. The wizard's primary school and current level control gear and pin eligibility; target schools and combat level do not lower equipment eligibility.
@@ -133,8 +163,6 @@ Keep every target value as the stat you want **inside** the level-170 content. T
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-DeathStormOptimizer.ps1
 ```
 
-The expanded launcher defaults to `-GearPool BROAD`: it reads `target/wizard101/optimizer.sqlite`, keeps gear with unresolved mappings, merges pins/pets, writes `target/wizard101/catalog.json`, then runs Java against that generated JSON. This includes **Howling Werewolf's Collar**, which the earlier pool dropped because its Death Mastery effect has no modeled numeric stat. The current request locks that amulet. School, current-level, slot and recognizable test-item filters still apply; jewel/pin filters are unchanged. Issues and incomplete status are retained, and only decoded numeric bonuses are scored. Unknown effects, requirements and extracted set bonuses are not resolved by including these records. Use `-GearPool FILTERED` for the earlier mapping filter (the collar lock will then fail). The standalone mock launcher still defaults to FILTERED. `-Database` changes the source SQLite path; renaming the generated JSON does not broaden the pool. Generated JSON is replaced each run.
-
 This uses the existing local WAD databases plus a supplemental talent-resource capture, rebuilds seven explicit hypothetical pet configurations and supported talent definitions, includes eligible pins and star jewels, and writes `target/wizard101/death-storm-expanded-results.json`. The request now uses `petSearch.mode: "AUTO"` to search five-talent combinations from an editable 20-talent Death/Storm pool. Change that value to `"PREDEFINED"` to select among the seven existing [pet profiles](examples/pet-profiles.json). Use `petSearch.lockedTalents: ["Mighty", "Death-Dealer"]` to require manifested talents by name in either mode. See [switching modes, pool editing and talent locks](docs/AUTO_PETS.md). Targets and all other search settings remain in [the request](examples/death-storm-request.json). Mounts remain excluded, extracted set bonuses remain unresolved, and base power-pip chance is still mocked. Pet formula/rounding and retail availability need independent verification. See [setup, rules and validation](docs/PINS_AND_PETS.md) and [historical results](docs/DEATH_STORM_RUN.md).
 
 The earlier health-only objective run met all seven requirements and reached 6,659.8 modeled health, with six Death Punishing pins, two +155 tear health jewels and two +525 square health jewels. It is preserved at `target/wizard101/storm-primary-health-only-results.json`. The current request also rewards extra stats as described below, so its best build can trade some health for those bonuses. See [the run report](docs/DEATH_STORM_RUN.md) for results. Target-based socket refinement helps the GA evaluate new armor with useful compatible pins/jewels instead of relying only on random socket combinations.
@@ -152,6 +180,46 @@ To give a new request the same health preference, add this object to its `target
 ```
 
 No `value` is needed for `MAXIMIZE`. `scale: 1000` expresses the soft score in thousands of health; it is not a health goal or limit. Adjust weights/scales in the request to change the tradeoffs with other soft objectives. Supply natural base stats at the **current character level**, before scaling. The current preset supplies only a mocked base power-pip chance, so health omits natural base health until a verified `HEALTH:UNIVERSAL` override is supplied. Base health is included before cap/scaling calculations and can affect saturation and tradeoffs.
+
+## Fire / Balance targets with pins and pets
+
+The [Fire/Balance request](examples/fire-balance-request.json) uses a Fire-primary wizard with these post-scaling mandatory minimums:
+
+| Stat | FIRE | BALANCE |
+| --- | ---: | ---: |
+| Damage | 205 | 181 |
+| Pierce | 56 | 36 |
+| Accuracy | 25 | 15 |
+
+It also requires 10 Life accuracy and 100 power-pip chance. Lovelorn Spirit's Amulet is locked in AMULET. Its AUTO talent pool includes Fire/Balance talents plus Life-Sniper. Health uses weight 1 / scale 1000; Fire/Balance damage, resistance, accuracy and pierce each use weight 1 / scale 100. Life accuracy and power pips are minimum-only. No custom scaled ceilings are supplied.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-DeathStormOptimizer.ps1 -Request examples/fire-balance-request.json -GearPool BROAD -Output target/wizard101/fire-balance-results.json
+```
+
+Earlier Fire/Balance screened results predate the current amulet lock. Check a new run against the current request before reusing an older result.
+
+## Death / Ice targets with supplied damage ceilings
+
+The [Death/Ice request](examples/death-ice-request.json) uses a Death-primary wizard with these post-scaling mandatory minimums:
+
+| Stat | DEATH | ICE |
+| --- | ---: | ---: |
+| Damage | 220 | 228 |
+| Pierce | 45 | 45 |
+| Accuracy | 15 | 20 |
+
+It also requires 100 power-pip chance and locks Collar of the Betrayed in AMULET. Damage floors are 15 below the supplied ceilings of 235 Death / 243 Ice. Both damage preferences use weight 10 / scale 100, with health at weight 1 / scale 1000 and resistance, accuracy and extra pierce at weight 1 / scale 100 in each school. Damage above the minimums continues earning a reward until its ceiling; mandatory requirements rank ahead of every preference.
+
+This request uses `wizard.scaledCapOverrides` to replace the captured model's lower damage ceilings while retaining its proportional ratios. Those supplied scenario inputs do not establish verified retail scaling. See [scaling and supplied ceilings](#level-scaling-and-supplied-ceilings) and [the full Death/Ice run record](docs/DEATH_ICE_RUN.md).
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-DeathStormOptimizer.ps1 -Request examples/death-ice-request.json -GearPool BROAD -Output target/wizard101/death-ice-calibrated-results.json
+```
+
+The recorded GA-only run reached 224.04 Death / 225.74 Ice and missed the Ice minimum by 2.26. Separate targeted socket refinement produced four model-feasible alternatives at **222.47 Death / 233.43 Ice**, meeting all seven minimums and the collar lock. The matching builds are in local [death-ice-refined-results.json](target/wizard101/death-ice-refined-results.json), labeled `SAVED_GA_SOCKET_REFINEMENT`; the launcher does not automatically reproduce that saved-candidate refinement step. Its helper, inputs and reproduction command are documented in the run record. The older `death-ice-results.json` uses superseded ceilings and should be treated as historical.
+
+All expanded launchers replace shared generated catalog/pet files, so run them sequentially. Their result files and refinement helpers live under ignored `target/` and are absent from a fresh checkout.
 
 ## Lock or exclude gear by name
 
@@ -191,7 +259,7 @@ Verify this tiny catalog exhaustively:
 java -jar target/GearGenetics-1.0-SNAPSHOT.jar optimize --request examples/offschool-exact-request.json --catalog examples/catalog.json --output target/exact-results.json
 ```
 
-An exact result is optimal only within its supplied catalog, slots, restrictions and raw calculation model. Genetic results are heuristic.
+An exact result is optimal only within its supplied catalog, slots, restrictions and configured stat/scaling model. Genetic results are heuristic.
 
 ## Desired stats
 
@@ -220,9 +288,31 @@ Distances are divided by a positive scale and multiplied by a positive weight. C
 
 Damage, resistance, accuracy, piercing, critical/block ratings, pip-conversion rating and flat damage/resistance are school-aware. Global stats use UNIVERSAL. Percent values use percentage points: 100 means 100%. Shadow rating and chance remain different types. Raw item bonuses are retained separately from character totals. Optional level scaling uses the documented versioned cap model; additional combat curves and rating conversions are not applied.
 
-Wizard profile fields include school, level, optional baseOverrides, ownedOnly, ownedItemIds and ownedQuantities. Base stats come from exact SCHOOL:level catalog entries. Manual overrides replace named source values. Without a source, manual entries are used and unspecified values are zero. Missing source plus no override is an error. An explicit empty values object intentionally supplies zero base stats. No real progression table is bundled.
+Wizard profile fields include school, level, optional scaledLevel, scaledCapOverrides and baseOverrides, ownedOnly, ownedItemIds and ownedQuantities. Base stats come from exact SCHOOL:level catalog entries. Manual base overrides replace named source values. Without a source, manual entries are used and unspecified values are zero. Missing source plus no base override is an error. An explicit empty base values object intentionally supplies zero base stats. No real progression table is bundled. Scaled cap overrides separately control evaluated ceilings as described below.
 
-Request JSON is reusable directly; `optimize --save-request copy.json` saves the input request, retaining friendly gear and talent selections.
+Request JSON is reusable directly; `optimize --save-request copy.json` saves the input request, retaining friendly gear/talent selections and optional scaled cap overrides.
+
+## Level scaling and supplied ceilings
+
+`wizard.level` controls gear eligibility and base-stat lookup. Optional `wizard.scaledLevel` enables post-scaling targets; omitting it retains raw scoring. Enter desired minimums directly in post-scaling units. Scaled school-specific targets require explicit schools; global health and power-pip targets use UNIVERSAL. Results keep raw totals alongside `targetStats` and scaling metadata.
+
+When supplied ceilings differ from the bundled table, add an explicit `scaledCapOverrides` StatBlock inside `wizard`, as in this Death/Ice profile:
+
+```json
+{
+  "school": "DEATH",
+  "level": 180,
+  "scaledLevel": 170,
+  "scaledCapOverrides": {
+    "values": {"DAMAGE:DEATH": 235, "DAMAGE:ICE": 243}
+  },
+  "baseOverrides": {"values": {"POWER_PIP_CHANCE:UNIVERSAL": 40}}
+}
+```
+
+For an overridden stat the model evaluates `min(rawEffective / bundledSourceCap * bundledDestinationCap, suppliedCeiling)`. This replaces saturation while preserving the bundled ratio. It does not grant a stat bonus or create a minimum target: the Death/Ice request separately requires 220 / 228 damage in `targets`. Caps, target minimums and base overrides serve different purposes.
+
+Nonempty overrides require scaling, positive finite values, supported explicit-school keys and positive bundled source/destination caps. Omitted/null or empty overrides preserve the original calculation. Result `scaling.capOverrides`, its model label and warnings distinguish supplied ceilings from captured table data. JSON/SQLite profiles preserve the setting; existing requests without it retain their behavior. Retail rounding, floor semantics and the ratio model still require validation. See [the scaling details](docs/LEVEL_SCALING.md#request-supplied-post-scaling-ceilings) and [JSON contract](docs/IMPORT_FORMAT.md#character-level-and-post-scaling-targets).
 
 ## Lock, exclude and own equipment
 
@@ -248,7 +338,7 @@ Locks and restrictions are enforced in candidate generation, initialization, cro
 
 The search object configures seed, populationSize, generations, mutationRate, crossoverRate, tournamentSize, elites, method (GA or EXACT) and exactLimit. Defaults preserve the prior local population 250, mutation 0.5 and tournament 7, adding elitism.
 
-The same request/catalog/seed reproduces results. Candidate domains are prefiltered once; full equipment/socket signatures cache evaluations. Progress and best-ever history report feasibility, deficit and objective. Pet selection has no unbounded loops.
+The same engine version, request, catalog and seed reproduce results. Candidate domains are prefiltered once; full equipment/socket signatures cache evaluations. Progress and best-ever history report feasibility, deficit and objective. Pet selection has no unbounded loops.
 
 topK defaults to 10. Equal stat/card/set outcomes are collapsed; minDifferentSlots controls minimum gear/socket differences between alternatives. Fewer results may be returned. Diversity filtering retains the best-ranked build. No unsafe dominance pruning discards candidates needed for maximum targets or set bonuses.
 
@@ -387,7 +477,7 @@ $projectMaven = 'C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.2\plugins\maven
 & $projectMaven -o -B -ntp package
 ```
 
-Omit `-o` when dependencies need downloading. Last verified on 2026-11-05: **61 Java tests and 22 Python tests passed**. These are recorded results, not a substitute for checking a new implementation. Documentation-only edits do not require rebuilding Java. Update this README and the relevant feature document after changing workflows, and update [PROJECT_MAP.md](docs/PROJECT_MAP.md) after significant architecture/workflow changes.
+Omit `-o` when dependencies need downloading. Last verified on 2026-11-05: **74 Java tests and 25 Python tests passed**. These are recorded results, not a substitute for checking a new implementation. Documentation-only edits do not require rebuilding Java. Update this README and the relevant feature document after changing workflows, and update [PROJECT_MAP.md](docs/PROJECT_MAP.md) after significant architecture/workflow changes.
 
 Generated assets under ignored `target/` are local: a fresh checkout does not contain WAD captures, databases, prepared catalogs, JARs or saved runs. Ordinary new-target work can reuse existing source databases/captures and regenerate the request-specific pool; it does not require new archive extraction. Preserve source CSVs, archives and matching capture hashes. Follow [WAD_CATALOG.md](docs/WAD_CATALOG.md) when rebuilding those inputs is actually needed.
 
@@ -395,7 +485,7 @@ Generated assets under ignored `target/` are local: a fresh checkout does not co
 
 DataReading extends existing equipment/stat models with typed schools, catalog, sets and CSV compatibility. JewelHandeling and PetHandeling extend the original classes. Optimization owns requests, validation, search domains, base lookup, raw calculations, exact search and results. GA/GeneticUtils/Individual/Fitness retain the genetic search structure with seeded operators and target scoring. Storage provides strict JSON/SQLite. Main is a CLI adapter; Optimizer.optimize works independently of UI/import method. Python is an optional adapter, never the optimization engine.
 
-mvn test covers all-school/off-school aggregation, numeric fitness, locks across generations, eligibility/exclusions/inventory quantities, sockets/pins, sets, pets, missing/single pools, reproducibility, exhaustive comparison, CSV quoting, JSON/SQLite transactions and CLI round trips. See [audit](docs/AUDIT.md) and [deliverables/test results](docs/IMPLEMENTATION.md).
+mvn test covers all-school/off-school aggregation, numeric fitness, locks across generations, eligibility/exclusions/inventory quantities, archive player-item screening, sockets/pins, sets, pets, scaling and supplied ceilings, missing/single pools, reproducibility, exhaustive comparison, CSV quoting, JSON/SQLite transactions and CLI round trips. See [audit](docs/AUDIT.md), [player-item screening](docs/PLAYER_ITEM_FILTER.md), [scaling](docs/LEVEL_SCALING.md) and [deliverables/test results](docs/IMPLEMENTATION.md).
 
 Optional proportional level scaling and cap-aware target scoring are implemented through `wizard.scaledLevel`. Additional damage/resistance curves, rating conversions, arbitrary conditional/nonadditive effects, combat/PvP rules and socket unlock state/cost remain unimplemented; scaling rounding/floor behavior still needs retail verification. Pet attribute effects and Mighty are supported for explicit fully trained profiles through a provisional archive-derived calculation model; retail formula/rounding validation remains outstanding. Cards are retained/displayed metadata. No comprehensive verified catalog, progression table or live importer is bundled.
 

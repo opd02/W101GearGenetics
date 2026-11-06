@@ -42,7 +42,10 @@ public record OptimizationResult(String method, boolean exhaustive, long seed, i
         else {
             warnings.add("Targets, objective and effective school totals use post-scaling stats: level "+space.request.wizard.level
                 +" -> "+space.request.wizard.scaledLevel+"; raw equipment and character totals are also retained.");
-            warnings.add("Scaling uses versioned retail caps with the provisional proportional model, without rounding or unverified floor-field behavior; confirm against raid observations. No additional combat curves or rating conversions are applied.");
+            if (space.scaling.info().capOverrides().isEmpty())
+                warnings.add("Scaling uses versioned retail caps with the provisional proportional model, without rounding or unverified floor-field behavior; confirm against raid observations. No additional combat curves or rating conversions are applied.");
+            else warnings.add("User-supplied post-scaling caps replace bundled saturation ceilings: "+new TreeMap<>(space.scaling.info().capOverrides())
+                +". Bundled source/destination proportional ratios are retained; this calibration does not verify retail scaling behavior. No rounding, unverified floors, additional combat curves or rating conversions are applied.");
             if (space.base.raw(StatType.HEALTH,School.UNIVERSAL)==0)
                 warnings.add("No natural base health was supplied; health totals and scaling include only the configured base plus equipment/pet/jewel contributions.");
         }

@@ -14,7 +14,25 @@
 
 Howling Werewolf's Collar is locked in AMULET; other equipment and pet talents are unlocked. Owned-only mode is off. Mandatory deficits are normalized by their respective target values with equal weights. The current soft objective combines health with extra Death/Storm resistance, accuracy, damage and pierce. Earlier runs below used fewer soft objectives and did not lock the collar.
 
+## Screened broad pool rerun (2026-11-05)
+
+With [player-item screening](PLAYER_ITEM_FILTER.md), the unchanged current seed-7, population-750, 700-generation request returned five alternatives meeting all seven mandatory targets. Screening rejected 6,381 archive records from the supplied catalog; the named collar lock remained eligible. The launcher took 292.6 seconds and evaluated 97,576 unique builds. The best objective is 14.948007976712356 with 7,437.885294 modeled post-scaling health.
+
+| Stat | Minimum | Best screened result |
+| --- | ---: | ---: |
+| Death damage | 340 | 341.218329 |
+| Storm damage | 107 | 152.005455 |
+| Death pierce | 54 | 54.083333 |
+| Storm pierce | 36 | 54.083333 |
+| Storm accuracy | 30 | 30 |
+| Death accuracy | 15 | 40 |
+| Power-pip chance | 100 | 100.04 |
+
+The best uses Headmistress' Dynamic Cap, Shocking Private Eye's Coat, Shocking Hanami Waraji, Clockwork Pocket Clock, Shocking Abomination Athame, Howling Werewolf's Collar, Shocking Crimefighter's Ring and Shocking Crimefighter's Notes, plus the AUTO pet. Results are retained at `target/wizard101/death-storm-screened-results.json`, with `death-storm-screened-run.log`. The original normal result is preserved for comparison. All alternatives were checked against every mandatory target, objective contributions and the collar lock; none uses a rejected gear or jewel ID. These are provisional modeled results, with the same mocked pip base and omitted natural health described above.
+
 ## Broad pool with required collar (2026-11-05)
+
+This section records the earlier run before [player-item screening](PLAYER_ITEM_FILTER.md). A later 700-generation run in `target/wizard101/death-storm-expanded-results.json` selected the internal `HG_Dog_BiblioTransform_L170_StatHat`; its stronger score is contaminated and is not an obtainable-build result. The rebuilt engine now independently rejects internal markers, unlocalized records and uncertain equipment eligibility while retaining the collar. Corrected reruns use distinct `*-screened-results.json` paths below; old results remain preserved for audit.
 
 The expanded launcher now defaults to `-GearPool BROAD`, preparing `target/wizard101/catalog.json` from `target/wizard101/optimizer.sqlite`. The pool contains 30,552 gear records and 2,359 jewels/pins/star jewels. Gear with unresolved mappings is retained, including the level-100 Howling Werewolf's Collar (`w101:template:1338316`); its Death Mastery effect remains unmodeled, while its decoded 4 Death damage, 2 Death accuracy and two square sockets are available. Existing school/current-level/slot/test-item and jewel filters remain. Issues and incomplete status are preserved. `-GearPool FILTERED` restores the earlier gear mapping filter and excludes the collar.
 

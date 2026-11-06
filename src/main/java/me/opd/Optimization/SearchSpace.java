@@ -10,6 +10,8 @@ public class SearchSpace {
     public final StatBlock base;
     public final StatScaling scaling;
     public final List<String> selectionNotes;
+    /** Archive records rejected independently of allowIncompleteItems and name exclusions. */
+    public final Map<String,String> rejectedItems;
     public final AutoPetSearch autoPets;
     public final List<GearSlot> slots;
     public final Map<GearSlot,List<Gear>> gear = new EnumMap<>(GearSlot.class);
@@ -21,6 +23,24 @@ public class SearchSpace {
         var resolved=GearNameResolver.resolve(catalog,inputRequest);
         OptimizationRequest request=resolved.request();
         List<String> notes=new ArrayList<>(resolved.notes());
+        Map<String,String> rejected=new TreeMap<>();
+        Map<String,String> rejectedNames=new TreeMap<>();
+        for (Gear item : catalog.gear) {
+            String reason=PlayerItemFilter.rejectionReason(item);
+            if (reason!=null) { rejected.put(item.id,reason); rejectedNames.put(item.id,item.name); }
+        }
+        for (Jewel item : catalog.jewels) {
+            String reason=PlayerItemFilter.rejectionReason(item);
+            if (reason!=null) { rejected.put(item.id,reason); rejectedNames.put(item.id,item.name); }
+        }
+        rejectedItems=Collections.unmodifiableMap(rejected);
+        if (!rejected.isEmpty()) {
+            Map<String,Integer> counts=new TreeMap<>();
+            rejected.values().forEach(reason -> counts.merge(reason,1,Integer::sum));
+            notes.add("Player-item filter rejected "+rejected.size()+" archive record(s): "+counts
+                +". Examples: "+rejectedNames.entrySet().stream().limit(5).map(e -> e.getValue()+" ["+e.getKey()+"]").toList()
+                +". Remaining archive records still require retail availability verification.");
+        }
         boolean automatic=request.petSearch.mode==PetSearchConfig.Mode.AUTO;
         var definitions=PetTalentResolver.definitions(catalog,automatic);
         var lockedTalents=PetTalentResolver.resolve(request.petSearch.lockedTalents,definitions,"petSearch.lockedTalents");
@@ -28,13 +48,13 @@ public class SearchSpace {
         this.request=request; this.catalog=catalog; base=catalog.resolveBaseStats(request.wizard);
         scaling=StatScaling.forRequest(request,catalog);
         slots=Arrays.stream(GearSlot.values()).filter(request.requiredSlots::contains).toList();
-        List<Jewel> eligibleJewels=catalog.jewels.stream().filter(j -> allowed(j.id,j.source,j.category,j.complete)
+        List<Jewel> eligibleJewels=catalog.jewels.stream().filter(j -> !rejectedItems.containsKey(j.id) && allowed(j.id,j.source,j.category,j.complete)
             && j.eligible(request.wizard.school,request.wizard.level)).sorted(Comparator.comparing(j -> j.id)).toList();
         for (GearSlot slot : slots) {
             List<Gear> candidates=new ArrayList<>();
             for (Gear source : catalog.gear.stream().filter(g -> g.slot==slot).sorted(Comparator.comparing(g -> g.id)).toList()) {
                 Gear item=source;
-                if (!allowed(item.id,item.source,item.category,item.complete) || !item.eligible(request.wizard.school,request.wizard.level)
+                if (rejectedItems.containsKey(item.id) || !allowed(item.id,item.source,item.category,item.complete) || !item.eligible(request.wizard.school,request.wizard.level)
                     || (request.wizard.ownedOnly && item.pet != null && item.pet.hypothetical)
                     || (request.lockedItems.containsKey(slot) && !request.lockedItems.get(slot).equals(item.id))) continue;
                 if (slot==GearSlot.PET) {
@@ -64,7 +84,8 @@ public class SearchSpace {
             }
             if (candidates.isEmpty()) throw new IllegalArgumentException("No valid candidates for " + slot
                 + (request.lockedItems.containsKey(slot) ? " (locked " + request.lockedItems.get(slot) + ")" : "")
-                + ". Check school, level, exclusions, ownership, completeness and socket locks.");
+                + (request.lockedItems.containsKey(slot) && rejectedItems.containsKey(request.lockedItems.get(slot)) ? "; player-item filter: "+rejectedItems.get(request.lockedItems.get(slot)) : "")
+                + ". Check school, level, exclusions, ownership, completeness, player-item filtering and socket locks.");
             gear.put(slot,List.copyOf(candidates));
         }
         if (automatic) {

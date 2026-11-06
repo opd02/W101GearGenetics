@@ -6,7 +6,14 @@ import java.util.*;
 
 /** Versioned proportional cap model. Raid rounding and floor-field semantics remain provisional. */
 public final class StatScaling {
-    public record Info(int characterLevel,int scaledLevel,String tableVersion,String model,Map<String,String> source) {}
+    public record Info(int characterLevel,int scaledLevel,String tableVersion,String model,Map<String,String> source,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)
+            Map<String,Double> capOverrides) {
+        public Info { capOverrides=capOverrides==null ? Map.of() : Map.copyOf(capOverrides); }
+        public Info(int characterLevel,int scaledLevel,String tableVersion,String model,Map<String,String> source) {
+            this(characterLevel,scaledLevel,tableVersion,model,source,Map.of());
+        }
+    }
     private record Row(School school,int level,Map<String,Double> caps) {}
     private record Table(int schemaVersion,String version,Map<String,String> source,Map<String,Double> floorPercent,List<Row> rows) {}
     private static final class Tables {
@@ -26,13 +33,21 @@ public final class StatScaling {
             } catch (Exception e) { throw new IllegalStateException("Cannot load level-scaling table",e); }
         }
     }
-    private final Map<String,Double> sourceCaps,targetCaps;
+    private final Map<String,Double> sourceCaps,targetCaps,capOverrides;
     private final Info info;
     private StatScaling(WizardProfile wizard) {
         Table table=Tables.DATA;
         sourceCaps=find(table,wizard.school,wizard.level);
         targetCaps=find(table,wizard.school,wizard.scaledLevel);
-        info=new Info(wizard.level,wizard.scaledLevel,table.version(),"CAPPED_PROPORTIONAL_UNROUNDED",Map.copyOf(table.source()));
+        capOverrides=wizard.scaledCapOverrides==null ? Map.of() : Map.copyOf(wizard.scaledCapOverrides.values);
+        for (String key : capOverrides.keySet()) {
+            String[] parts=key.split(":");
+            requireSupported(StatType.valueOf(parts[0]),School.valueOf(parts[1]));
+            if (sourceCaps.get(key)==0 || targetCaps.get(key)==0)
+                throw new IllegalArgumentException("Cannot override a scaled cap with no positive bundled ratio: "+key);
+        }
+        info=new Info(wizard.level,wizard.scaledLevel,table.version(),capOverrides.isEmpty()
+            ? "CAPPED_PROPORTIONAL_UNROUNDED" : "PROPORTIONAL_WITH_USER_CAPS_UNROUNDED",Map.copyOf(table.source()),capOverrides);
     }
     public static StatScaling forRequest(OptimizationRequest request,Catalog catalog) {
         if (request.wizard.scaledLevel==null) return null;
@@ -64,6 +79,10 @@ public final class StatScaling {
         if (source==null || target==null) throw new IllegalArgumentException("Unsupported scaled stat "+key);
         double value=raw.effective(stat,school);
         if (source==0 || target==0) return 0;
+        Double override=capOverrides.get(key);
+        // A supplied ceiling replaces saturation only, not the bundled downscaling ratio.
+        // Clamp last so reaching a requested cap returns its exact double value.
+        if (override!=null) return Math.min(value/source*target,override);
         // Clamp before multiplying. Do not round before mandatory comparisons.
         return Math.min(value/source,1.0)*target;
     }

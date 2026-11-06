@@ -47,7 +47,7 @@ Values below are taken from the **Storm-primary** records; percentage fractions 
 | Death accuracy | 57 | 57 | 20 | 20 |
 | Power-pip chance | 134 | 134 | 100 | 100 |
 
-For comparison, the Death-primary profile's native Death damage values are 216 at 180 and 213 at 170. Applying those to a Storm wizard's Death damage would give the wrong result.
+For comparison, the captured Death-primary profile's native Death damage values are 216 at 180 and 213 at 170. Applying those to a Storm wizard's Death damage would give the wrong result. These captured constants are not established runtime maxima: the user reports 235 Death / 243 Ice inside level-170 content. The Death/Ice request now uses explicit user cap overrides rather than presenting the captured 213 / 221 values as verified gameplay limits.
 
 For the current trial's desired post-scaling thresholds, the basic ratio model requires approximately these unscaled level-180 stats:
 
@@ -59,6 +59,30 @@ For the current trial's desired post-scaling thresholds, the basic ratio model r
 | 36 Storm pierce | 36.610169 |
 
 The requested accuracy and power-pip thresholds are unchanged by these two bands' cap ratios. Do not rely on a rounded boundary value without checking the game's rounding behavior.
+
+## Request-supplied post-scaling ceilings
+
+Optional `wizard.scaledCapOverrides` replaces selected saturation ceilings while retaining the bundled source/destination ratios. This is an explicit scenario calibration using user-supplied values; it does not rewrite the captured table or establish why its values differ from observed gameplay. Existing requests without overrides keep their exact prior arithmetic.
+
+The Death/Ice request uses:
+
+```json
+"wizard": {
+  "school": "DEATH",
+  "level": 180,
+  "scaledLevel": 170,
+  "scaledCapOverrides": {
+    "values": {"DAMAGE:DEATH": 235, "DAMAGE:ICE": 243}
+  },
+  "baseOverrides": {"values": {"POWER_PIP_CHANCE:UNIVERSAL": 40}}
+}
+```
+
+For an overridden key the formula is `min(rawEffective / bundledSourceCap * bundledDestinationCap, userCeiling)`. All gear, jewels, pets and base contributions are aggregated before this calculation. The Death/Ice ratios remain 213/216 for Death damage and 221/224 for Ice damage. Its user-approved minimums are now 220 / 228, up to 15 below the 235 / 243 ceilings. The modeled raw totals needed to meet those minimums are approximately 223.098592 / 231.095023; saturating the ceilings requires about 238.309859 / 246.298643. Targets remain in post-scaling units. Replacing a ceiling does not grant free damage or multiply all raw damage by a larger destination cap.
+
+Overrides require scaling to be enabled, positive finite values, supported keys and explicit schools for school-specific stats. A key with a zero source/destination cap cannot be overridden because its ratio is unavailable. Other stats, raw totals, current-level eligibility and client-revision checks retain their existing behavior. Null/omitted or empty overrides retain the default model; no override is inferred from target values.
+
+JSON/SQLite profiles and CLI saved requests preserve the optional StatBlock. Python pool preparation still uses character level, school and slots and passes the request to Java unchanged. Result `scaling.capOverrides` records the explicit ceilings and uses model `PROPORTIONAL_WITH_USER_CAPS_UNROUNDED`; warnings state that ratios are retained and the calibration is not independently verified. The ordinary model label and JSON descriptor remain unchanged when no overrides are supplied.
 
 ## What still needs verification
 

@@ -28,12 +28,13 @@ public final class GearNameResolver {
             if (existing!=null && named.stream().noneMatch(g -> existing.equals(g.id)))
                 throw new IllegalArgumentException("Conflicting name and ID locks for "+slot+": "+selector.name+" / "+existing);
             List<Gear> eligible=named.stream().filter(g -> (existing==null || existing.equals(g.id))
+                && PlayerItemFilter.rejectionReason(g)==null
                 && g.eligible(request.wizard.school,request.wizard.level)
                 && (g.complete || request.allowIncompleteItems)
                 && !request.excludedIds.contains(g.id) && !request.excludedSources.contains(g.source) && !request.excludedCategories.contains(g.category)
                 && (!request.wizard.ownedOnly || request.wizard.quantity(g.id)>0 && (g.pet==null || !g.pet.hypothetical))).toList();
             if (eligible.isEmpty()) throw new IllegalArgumentException("Locked "+slot+" '"+selector.name
-                +"' has no eligible match. Check character level, school, exclusions, ownership and completeness. Catalog matches: "+describe(named));
+                +"' has no eligible match. Check character level, school, exclusions, ownership, completeness and the player-item filter. Catalog matches: "+describe(named));
             if (eligible.size()>1) throw new IllegalArgumentException("Ambiguous locked "+slot+" name '"+selector.name
                 +"': "+eligible.size()+" eligible records. Specify an item level using {\"name\":\"...\",\"level\":180}. "
                 +"If records still differ at that level, use the existing lockedItems ID field. Matches: "+describe(eligible));
@@ -53,7 +54,8 @@ public final class GearNameResolver {
             +(suggestions.isEmpty()?"Use the find command to search names.":"Similar names: "+suggestions));
     }
     private static String describe(List<Gear> gear) {
-        return gear.stream().limit(12).map(g -> g.name+" (level "+g.level+", schools="+g.schools+", source="+g.source+") ["+g.id+"]")
+        return gear.stream().limit(12).map(g -> g.name+" (level "+g.level+", schools="+g.schools+", source="+g.source+") ["+g.id+"]"
+                +(PlayerItemFilter.rejectionReason(g)==null ? "" : "; player-item filter: "+PlayerItemFilter.rejectionReason(g)))
             .collect(Collectors.joining("; "))+(gear.size()>12?"; ...":"");
     }
 }

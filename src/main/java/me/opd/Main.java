@@ -234,6 +234,7 @@ public class Main {
             find (--catalog catalog.json | --db items.sqlite) --name "part of a gear name" [--slot HAT] [--school STORM] [--level 180] [--limit 20]
             Enum inputs and JSON use uppercase. Run examples/offschool-request.json with examples/catalog.json.
             Requests: wizard.level controls gear eligibility; optional wizard.scaledLevel makes all targets post-scaling.
+            Optional wizard.scaledCapOverrides supplies modeled post-scaling ceilings while retaining bundled scaling ratios.
             Name constraints: lockedGear maps slots to names or {name,level}; excludedGear lists names or {name,level,slot}.
             Pet search: petSearch.mode is PREDEFINED (default) or AUTO; AUTO needs template and 5..20 talentPool names.
             petSearch.lockedTalents locks manifested talent names in either mode. See docs/AUTO_PETS.md.
