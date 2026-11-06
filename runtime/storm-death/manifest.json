@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "minimumJava": 22,
+  "coverage": {
+    "school": "STORM",
+    "maximumLevel": 180,
+    "slots": [
+      "HAT",
+      "ROBE",
+      "BOOTS",
+      "WAND",
+      "ATHAME",
+      "AMULET",
+      "RING",
+      "DECK",
+      "PET"
+    ],
+    "gearPool": "BROAD",
+    "includePins": true
+  },
+  "counts": {
+    "gear": 30552,
+    "jewels": 2359,
+    "petTalents": 154,
+    "petProfiles": 7
+  },
+  "files": {
+    "optimizer.jar": {
+      "sha256": "e26f328d55c7aca6723a59dd85b8d5ea69c571856b2b7fc46c31a8bd10127962",
+      "bytes": 17781412
+    },
+    "catalog.json.gz": {
+      "sha256": "b22dc4c1b5bebfd46b1d071e3456f520d3d7fe9696b6e5c25678edcbe94d23b8",
+      "bytes": 3861599
+    },
+    "catalog.json": {
+      "sha256": "b51c4427eadb6f36478344908c5f66681a2a7aafc3ee14d10019fc1b7f9c5df9",
+      "bytes": 64854057
+    }
+  },
+  "source": {
+    "executableSha256": "544ab726ef7b920a5ccb67aa3d06b245db7e0012317d2fe7856d58c17c31cf7e",
+    "rootSha256": "4e09b3da242a6f5650624497359dfaebf6cd54e72a0ae1ee21bdcf7436b42c66",
+    "petResourcesCapturedAt": "2026-11-02T05:39:47.8786069+00:00",
+    "requestSha256": "5acf9a2c086fac6d52108300cf06ab0f0dbb5fc7b12c56b3e81ab003002d2c5e",
+    "petProfilesSha256": "de54d620ad730a32376cdc00c4e929497eb2173533440a7ed3466c3df47daa79"
+  },
+  "validation": "Provisional WAD records, hypothetical pets and proportional scaling; retail stats, availability and formulas remain unverified. Base-stat assumptions are specified in the request."
+}

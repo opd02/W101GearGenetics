@@ -1,6 +1,6 @@
 # GearGenetics project map
 
-Last reviewed: 2026-11-05. This describes the local working tree, including substantial uncommitted WAD, pin, pet, scaling and name-selection work. It is not a description of only the latest Git commit.
+Last reviewed: 2026-11-06. This describes the local working tree, including WAD, pin, pet, scaling, name-selection and portable runtime work. Current source and JSON take precedence over historical reports.
 
 ## Purpose and current state
 
@@ -35,6 +35,7 @@ Paths below are relative to the repository root unless linked.
 | Catalog projection | `bridge/build_wad_catalog.py` | Stage raw captures, project stats/restrictions/sockets, retain mapping issues, export normalized catalog |
 | Pet projection | `bridge/build_pet_catalog.py` | Resolve supported talent resources and star jewels; build explicit pet profiles; check capture revision consistency |
 | Run pool preparation | `bridge/prepare_mock_catalog.py` | Filter provisional database by request; BROAD retains unresolved gear, FILTERED omits it; optionally merge pins/pets |
+| Portable Storm/Death runtime | `Run-StormDeathPortable.ps1`, `runtime/storm-death/`, `bridge/build_portable_runtime.py` | Tracked executable and compressed prepared catalog; run a fresh checkout with Java 22+ and PowerShell, without extraction inputs; see [runtime guide](../runtime/README.md) |
 | Other adapters | `bridge/normalize.py`, `bridge/wad_manifest.py` | Generic input normalization and the earlier optional WizWalker manifest prototype |
 
 Paths abbreviated after a directory in the table refer to sibling files within that area. Existing package spellings `JewelHandeling` and `PetHandeling` are intentional references to the current tree.
@@ -62,7 +63,7 @@ optimizer.sqlite + request + optional pet-catalog.json
 
 `examples/catalog.json` bypasses archive extraction and supplies a synthetic fixture. The original `GearDB.csv`, `JewelDB.csv`, and `PetTraitsDB.csv` remain preserved legacy inputs; migrated records are incomplete.
 
-Generated captures, databases, catalogs, JARs, and results live under ignored `target/`. They currently exist locally but are absent from a fresh checkout. Captures and generated catalogs are too large to use as routine orientation documents.
+Raw captures, databases, development builds, caches and results live under ignored `target/` and are absent from a fresh checkout. A curated executable and compressed Storm-primary catalog are intentionally tracked under `runtime/storm-death/`; `Run-StormDeathPortable.ps1` uses these directly and reconstructs its disposable catalog cache. The catalog covers levels through 180, eight equipment slots plus PET, BROAD gear, pins and pets. The current request remains authoritative. Raw captures and full generated catalogs are too large to use as routine orientation documents.
 
 ## Run and validate
 
@@ -80,12 +81,15 @@ python -m unittest discover -s bridge -p 'test_*.py'
 
 | Workflow | Launcher and editable inputs | Default result |
 | --- | --- | --- |
+| Fresh-checkout Storm/Death | `Run-StormDeathPortable.ps1`, `examples/death-storm-request.json`, tracked `runtime/storm-death/` | `target/wizard101/storm-death-portable-results.json` |
 | Eight-slot WAD demo | `Run-MockOptimizer.ps1`, `examples/wad-mock-request.json` | `target/wizard101/mock-results.json` |
 | Expanded Death/Storm search | `Run-DeathStormOptimizer.ps1`, `examples/death-storm-request.json`, `examples/pet-profiles.json` | `target/wizard101/death-storm-expanded-results.json` |
 
-Launch with `powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-DeathStormOptimizer.ps1` or the equivalent mock launcher. Launchers require an already-built JAR and existing extracted databases; the expanded launcher also needs matching pet resources. They regenerate default outputs. Use `-Output` to retain a separate result. Both support `-JavaPath`; the mock launcher first tries `C:\Program Files\Java\jdk-22\bin\java.exe`.
+For a fresh checkout, run `powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-StormDeathPortable.ps1` with Java 22+; it requires no build, Python, game installation or extraction databases. See [runtime prerequisites, coverage and refresh](../runtime/README.md). The database-backed development paths remain `Run-DeathStormOptimizer.ps1` and the mock launcher: these require an already-built JAR and existing extracted databases; the expanded launcher also needs matching pet resources. All launchers regenerate default outputs and support `-Output` and `-JavaPath`.
 
 CLI exit 0 means the search completed; it can still have unmet mandatory targets. Inspect solution feasibility. Errors return 2. GA results do not establish global optimality or prove infeasibility.
+
+Portable runtime validation on 2026-11-06: rebuilt executable; all 74 Java and 28 Python tests passed. A temporary checkout ran with only portable inputs and Java/Windows tools on PATH. The full unchanged 750 / 700 AUTO request returned five feasible alternatives, passed all 35 mandatory-target comparisons and reproduced the previous screened ranked builds, stats, fitness, warnings, 97,576 evaluations and all 701 history entries (unordered set serialization ignored). Missing/corrupt bundle inputs, coverage/Java validation, cache repair/reuse and launch-directory handling were checked. See [runtime details](../runtime/README.md#validation-on-2026-11-06). Raw extraction artifacts remain local and preserved.
 
 The expanded launcher now defaults to `-GearPool BROAD` and prepares `target/wizard101/catalog.json` from the source `optimizer.sqlite`. It retains provisional gear with unresolved mappings, including the current AMULET lock, Howling Werewolf's Collar (`unsupported-stat-table:Mastery_Death`). School/current-level/slot and recognizable test filters remain; jewels/pins retain their existing mapping filters. Unknown effects/requirements/sets are not resolved or scored by broadening the pool. Use `-GearPool FILTERED` for the earlier behavior; the standalone mock launcher keeps that default. Historical results below used the earlier pool without the collar lock.
 
@@ -153,6 +157,7 @@ Next useful work: independently check representative gear, pins, pets, modifiers
 | [DEATH_ICE_RUN.md](DEATH_ICE_RUN.md) | Death-primary 180 -> 170 request, user-supplied 235/243 damage ceilings with 220/228 minimums, 45/45 pierce and run history |
 | [MOCK_RUN.md](MOCK_RUN.md) | Original eight-slot mock workflow and base-stat assumptions |
 | [WAD_CATALOG.md](WAD_CATALOG.md) | Implemented extraction, provenance, counts, staging schema, reproduction |
+| [CATALOG_REFRESH.md](CATALOG_REFRESH.md), [portable runtime](../runtime/README.md) | Database provenance, patch refresh, and running a fresh checkout without extraction tools |
 | [IMPORT_FORMAT.md](IMPORT_FORMAT.md) | Normalized JSON/storage contract |
 | [GEAR_SELECTION.md](GEAR_SELECTION.md) | Name-based locks/exclusions, version qualifiers, discovery and profile behavior |
 | [PLAYER_ITEM_FILTER.md](PLAYER_ITEM_FILTER.md) | Archive screening rules, BROAD/FILTERED distinction, contaminated historical runs and validation |

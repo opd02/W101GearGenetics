@@ -3,7 +3,7 @@
 ## Start each session
 
 1. Read [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md) for architecture, workflows, limitations and document links, then inspect the current request and relevant source. Current source and JSON take precedence over historical run reports.
-2. Check `git status --short`. The working tree contains substantial uncommitted implementation and documentation, including untracked source files. Preserve existing work; do not assume the Git commit represents the current application.
+2. Check `git status --short`. Preserve existing implementation and documentation, including any untracked source files; do not assume the Git commit represents the current application.
 3. For a new target gearset, follow [README: Create a new target gearset](README.md#create-a-new-target-gearset). For feature work, use [README: Feature development and verification](README.md#feature-development-and-verification).
 
 ## Current capabilities and starting points
@@ -42,6 +42,8 @@
 
 ## Local commands and artifacts
 
+For an immediate Storm-primary Death/Storm run on a fresh checkout, use `powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-StormDeathPortable.ps1`. The intentional tracked runtime under `runtime/storm-death/` includes the executable and compressed BROAD gear/pin/pet catalog; only Java 22+ and PowerShell are needed. See [runtime/README.md](runtime/README.md) for coverage, parameters and `bridge/build_portable_runtime.py` refresh instructions. Rebuild/republish after relevant code, scaling, profile or catalog changes. Existing database-backed launchers remain available for other schools and extraction workflows.
+
 From the repository root:
 
 ```powershell
@@ -60,8 +62,8 @@ $projectMaven = 'C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.2\plugins\maven
 & $projectMaven -o -B -ntp package
 ```
 
-`-o` works with the locally cached dependencies; a fresh checkout may need an online dependency restore. Last verified on 2026-11-05: 74 Java tests and 25 Python tests passed. Documentation-only changes do not require rebuilding Java.
+`-o` works with the locally cached dependencies; a fresh checkout may need an online dependency restore. Last verified on 2026-11-06: 74 Java tests and 28 Python tests passed, including portable bundle integrity/coverage and an isolated launcher run. The unchanged full portable Storm/Death run reproduced prior screened builds and history; see [runtime validation](runtime/README.md#validation-on-2026-11-06). Documentation-only changes do not require rebuilding Java.
 
-Generated JARs, catalogs, databases, captures and results live under ignored `target/` and are absent from a fresh checkout. Do not commit large generated artifacts or recreate/re-extract them unnecessarily when local inputs already exist. Preserve original CSVs, source archives and capture revision hashes. WAD-derived records, pet formulas/rounding, mocked base values and the proportional scaling model retain the validation limits described in the feature documents; do not promote them to verified retail facts.
+Development JARs, databases, captures, caches and results live under ignored `target/` and are absent from a fresh checkout. The user-authorized portable executable and compressed catalog under `runtime/storm-death/` are deliberately tracked; keep their manifest/hashes synchronized using the bundle builder. Do not commit other large generated artifacts or recreate/re-extract them unnecessarily when local inputs already exist. Preserve original CSVs, source archives and capture revision hashes with separate backups outside disposable build output. WAD-derived records, pet formulas/rounding, mocked base values and the proportional scaling model retain the validation limits described in the feature documents; do not promote them to verified retail facts.
 
 The project map and this guide are the recall files to reread in future sessions. Obsidian may view the same Markdown files; a separate vault or duplicated notes are unnecessary.

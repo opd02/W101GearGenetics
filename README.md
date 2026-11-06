@@ -4,7 +4,17 @@ A local Java gear optimizer supporting all seven schools independently, off-scho
 
 For a new development session, start with [AGENTS.md](AGENTS.md) and the [project map](docs/PROJECT_MAP.md). The map identifies the current architecture and feature documents; current source and request files take precedence over historical reports. Use [Create a new target gearset](#create-a-new-target-gearset) for new request files and [Feature development and verification](#feature-development-and-verification) for implementation work.
 
-**The modern example catalog is synthetic test data, not a verified in-game build or comprehensive gear database.** The original CSV files are preserved.
+**`examples/catalog.json` is synthetic test data, not a verified in-game build or comprehensive gear database.** The portable runtime uses provisional archive-derived data instead. The original CSV files are preserved.
+
+## Run Storm/Death immediately after pulling
+
+The tracked [portable runtime](runtime/README.md) includes the executable and prepared gear/pin/pet catalog. On Windows, install **Java 22+**, then run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-StormDeathPortable.ps1
+```
+
+This runs the unchanged [Storm-primary Death/Storm request](examples/death-storm-request.json), including its full 750 / 700 AUTO search, and saves `target/wizard101/storm-death-portable-results.json`. No build, Maven, Python, game installation, Imlight, Imcodec or extracted SQLite databases are needed. The compressed catalog and executable are ordinary Git files under `runtime/storm-death/`; only generated caches and results go in ignored `target/`. The runtime covers Storm-primary characters through level 180, eight equipment slots plus PET. See [coverage, Java selection and bundle refresh](runtime/README.md) before using another request.
 
 ## Build and run
 
@@ -477,9 +487,9 @@ $projectMaven = 'C:\Program Files\JetBrains\IntelliJ IDEA 2022.3.2\plugins\maven
 & $projectMaven -o -B -ntp package
 ```
 
-Omit `-o` when dependencies need downloading. Last verified on 2026-11-05: **74 Java tests and 25 Python tests passed**. These are recorded results, not a substitute for checking a new implementation. Documentation-only edits do not require rebuilding Java. Update this README and the relevant feature document after changing workflows, and update [PROJECT_MAP.md](docs/PROJECT_MAP.md) after significant architecture/workflow changes.
+Omit `-o` when dependencies need downloading. Last verified on 2026-11-06: **74 Java tests and 28 Python tests passed**, including portable runtime coverage/integrity and an isolated launcher run. The full portable 750 / 700 AUTO search reproduced the previous screened results; see [runtime validation](runtime/README.md#validation-on-2026-11-06). These are recorded results, not a substitute for checking a new implementation. Documentation-only edits do not require rebuilding Java. Update this README and the relevant feature document after changing workflows, and update [PROJECT_MAP.md](docs/PROJECT_MAP.md) after significant architecture/workflow changes.
 
-Generated assets under ignored `target/` are local: a fresh checkout does not contain WAD captures, databases, prepared catalogs, JARs or saved runs. Ordinary new-target work can reuse existing source databases/captures and regenerate the request-specific pool; it does not require new archive extraction. Preserve source CSVs, archives and matching capture hashes. Follow [WAD_CATALOG.md](docs/WAD_CATALOG.md) when rebuilding those inputs is actually needed.
+Generated assets under ignored `target/` are local: a fresh checkout does not contain WAD captures, databases or saved runs. The deliberate exception is the tracked [portable Storm/Death runtime](runtime/README.md), containing a prepared compressed catalog and executable under `runtime/`. Ordinary new-target work for other coverage can reuse existing source databases/captures and regenerate the request-specific pool; it does not require new archive extraction. Preserve source CSVs, archives and matching capture hashes outside disposable build output with separate backups. Follow [WAD_CATALOG.md](docs/WAD_CATALOG.md) when rebuilding those inputs is actually needed.
 
 ## Architecture, validation and roadmap
 

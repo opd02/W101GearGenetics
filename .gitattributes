@@ -1,0 +1,3 @@
+# Intentional portable distribution snapshots; keep their bytes unchanged.
+runtime/**/*.jar binary
+runtime/**/*.gz binary
