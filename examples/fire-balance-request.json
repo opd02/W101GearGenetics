@@ -1,0 +1,62 @@
+{
+  "wizard": {
+    "school": "FIRE",
+    "level": 180,
+    "scaledLevel": 170,
+    "baseOverrides": {
+      "values": {
+        "POWER_PIP_CHANCE:UNIVERSAL": 40
+      }
+    },
+    "ownedOnly": false
+  },
+  "requiredSlots": ["HAT", "ROBE", "BOOTS", "WAND", "ATHAME", "AMULET", "RING", "DECK", "PET"],
+  "allowIncompleteItems": true,
+  "excludedCategories": ["qa-or-test"],
+  "lockedGear": {
+    "AMULET": {"name": "Lovelorn Spirit's Amulet"}
+  },
+  "petSearch": {
+    "mode": "AUTO",
+    "template": "Hypothetical Death damage / Mighty",
+    "talentPool": [
+      "Fire-Dealer", "Fire-Giver", "Fire-Boon",
+      "Balance-Dealer", "Balance-Giver", "Balance-Boon",
+      "Pain-Giver", "Pain-Bringer", "Armor Breaker", "Armor Piercer",
+      "Spell-Proof", "Spell-Defying", "Fire-Sniper", "Balance-Sniper", "Sharp-Shot",
+      "Mighty", "Thinkin' Cap", "Life-Sniper", "Health Bounty", "Pip o'Plenty"
+    ],
+    "lockedTalents": []
+  },
+  "targets": [
+    {"stat": "DAMAGE", "school": "FIRE", "mode": "MINIMUM", "value": 205, "mandatory": true, "scale": 205},
+    {"stat": "DAMAGE", "school": "BALANCE", "mode": "MINIMUM", "value": 181, "mandatory": true, "scale": 181},
+    {"stat": "PIERCE", "school": "FIRE", "mode": "MINIMUM", "value": 56, "mandatory": true, "scale": 56},
+    {"stat": "PIERCE", "school": "BALANCE", "mode": "MINIMUM", "value": 36, "mandatory": true, "scale": 36},
+    {"stat": "ACCURACY", "school": "FIRE", "mode": "MINIMUM", "value": 25, "mandatory": true, "scale": 25},
+    {"stat": "ACCURACY", "school": "BALANCE", "mode": "MINIMUM", "value": 15, "mandatory": true, "scale": 15},
+    {"stat": "ACCURACY", "school": "LIFE", "mode": "MINIMUM", "value": 10, "mandatory": true, "scale": 10},
+    {"stat": "POWER_PIP_CHANCE", "school": "UNIVERSAL", "mode": "MINIMUM", "value": 100, "mandatory": true, "scale": 100},
+    {"stat": "HEALTH", "school": "UNIVERSAL", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 1000},
+    {"stat": "RESISTANCE", "school": "FIRE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "RESISTANCE", "school": "BALANCE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "ACCURACY", "school": "FIRE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "ACCURACY", "school": "BALANCE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "DAMAGE", "school": "FIRE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "DAMAGE", "school": "BALANCE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "PIERCE", "school": "FIRE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100},
+    {"stat": "PIERCE", "school": "BALANCE", "mode": "MAXIMIZE", "mandatory": false, "weight": 1, "scale": 100}
+  ],
+  "search": {
+    "seed": 7,
+    "populationSize": 750,
+    "generations": 250,
+    "mutationRate": 0.5,
+    "crossoverRate": 0.7,
+    "tournamentSize": 7,
+    "elites": 3,
+    "method": "GA"
+  },
+  "topK": 5,
+  "minDifferentSlots": 1
+}
